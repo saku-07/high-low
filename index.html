@@ -20,7 +20,6 @@
       --shadow: 0 18px 55px rgba(0,0,0,.45);
       --radius: 18px;
 
-      /* responsive card sizing */
       --cardW: clamp(92px, 18vw, 150px);
       --cardH: calc(var(--cardW) * 1.38);
       --gap: clamp(10px, 2.2vw, 18px);
@@ -110,7 +109,6 @@
       text-overflow:ellipsis;
     }
 
-    .topBtns{display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end}
     button, .btn{
       appearance:none;
       border:none;
@@ -157,11 +155,9 @@
       min-height: 560px;
     }
 
-    /* views */
     .view{display:none; padding: var(--pad)}
     .view.active{display:block}
 
-    /* Menu */
     .menuGrid{
       display:grid;
       grid-template-columns: 1.1fr .9fr;
@@ -278,17 +274,28 @@
       color: var(--muted);
       font-size: 13px;
     }
+
+    /* ▼ 修正：プルダウンを黒文字＋白背景（見やすさ優先） */
     select{
-      background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.12);
-      color: var(--text);
+      background: #ffffff;
+      border: 1px solid rgba(0,0,0,.18);
+      color: #0b1220;
       height: 38px;
       border-radius: 12px;
       padding: 0 10px;
       outline:none;
-      font-weight:700;
+      font-weight:800;
       cursor:pointer;
     }
+    select:focus{
+      box-shadow: 0 0 0 3px rgba(110,231,255,.18);
+      border-color: rgba(110,231,255,.55);
+    }
+    option{
+      color:#0b1220;
+      background:#ffffff;
+    }
+
     .menuActions{
       display:flex;
       gap: 10px;
@@ -297,7 +304,6 @@
       margin-top: 10px;
     }
 
-    /* Game */
     .gameTop{
       display:flex;
       align-items:flex-start;
@@ -366,6 +372,20 @@
       line-height:1.55;
     }
 
+    /* ▼ 追加：ゲーム中だけの上部操作ボタン */
+    .gameActions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+      align-items:center;
+    }
+    .miniBtn{
+      height: 40px;
+      min-width: 120px;
+      border-radius: 14px;
+    }
+
     .table{
       margin-top: var(--gap);
       display:grid;
@@ -401,7 +421,6 @@
       background:
         radial-gradient(circle at 30% 30%, rgba(110,231,255,.09), transparent 52%),
         radial-gradient(circle at 70% 70%, rgba(167,139,250,.08), transparent 52%);
-      filter: blur(0px);
       opacity:.9;
       pointer-events:none;
     }
@@ -453,7 +472,6 @@
       min-height: var(--cardH);
     }
 
-    /* Card */
     .cardWrap{
       width: var(--cardW);
       height: var(--cardH);
@@ -543,7 +561,6 @@
     .red{color:#d11a2a}
     .black{color:#0b1220}
 
-    /* Controls */
     .controls{
       display:flex;
       flex-wrap:wrap;
@@ -601,7 +618,6 @@
     .toast.bad{border-color: rgba(251,113,133,.25); background: rgba(251,113,133,.06)}
     .toast.neutral{border-color: rgba(255,255,255,.10)}
 
-    /* End overlay */
     .overlay{
       position:absolute; inset:0;
       background: rgba(0,0,0,.55);
@@ -639,7 +655,6 @@
     .modal .stat .v{font-size:22px; font-weight:900; margin-top:6px}
     .modal .actions{display:flex; gap: 10px; flex-wrap:wrap; justify-content:flex-end; margin-top: 10px}
 
-    /* Online */
     textarea{
       width:100%;
       min-height: 96px;
@@ -663,7 +678,6 @@
       margin-top: 8px;
     }
 
-    /* Small footer hint */
     .footHint{
       text-align:center;
       color: rgba(157,176,208,.85);
@@ -671,7 +685,6 @@
       padding: 8px 0 2px;
     }
 
-    /* Motion-reduction */
     @media (prefers-reduced-motion: reduce){
       *{animation:none !important; transition:none !important}
     }
@@ -681,6 +694,7 @@
 <body>
 <div class="app">
   <div class="shell">
+    <!-- ▼ 修正：初期画面に不要な「メニュー／新規ゲーム」をヘッダーから撤去（タイトルだけ残す） -->
     <header>
       <div class="brand">
         <div class="logo" aria-hidden="true"></div>
@@ -688,10 +702,6 @@
           <h1>High &amp; Low</h1>
           <div class="subtitle">トランプ(ジョーカー抜き) / 1人用・ローカル対戦・オンラインβ / GitHub Pages対応</div>
         </div>
-      </div>
-      <div class="topBtns">
-        <button id="btnMenu" class="ghost" title="メニューに戻る">メニュー</button>
-        <button id="btnNew" class="primary" title="新しくゲームを開始">新規ゲーム</button>
       </div>
     </header>
 
@@ -820,6 +830,12 @@
               子の番の人が「High / Low」を選びます。選択後にカードがめくれて結果が出ます。
             </div>
           </div>
+
+          <!-- ▼ 修正：ゲーム中だけ「メニュー」「新規ゲーム」を置く -->
+          <div class="gameActions">
+            <button id="btnMenuInGame" class="miniBtn ghost">メニュー</button>
+            <button id="btnNewInGame" class="miniBtn primary">新規ゲーム</button>
+          </div>
         </div>
 
         <div class="table">
@@ -931,13 +947,8 @@
 (() => {
   "use strict";
 
-  // -----------------------------
-  // Utilities
-  // -----------------------------
   const $ = (id) => document.getElementById(id);
   const sleep = (ms) => new Promise(r => setTimeout(r, ms));
-
-  function clamp(n, a, b){ return Math.max(a, Math.min(b, n)); }
   function shuffle(arr){
     for(let i=arr.length-1;i>0;i--){
       const j = Math.floor(Math.random()*(i+1));
@@ -946,8 +957,6 @@
     return arr;
   }
 
-  // Card representation
-  // value: 2..14 (A=14)
   const SUITS = [
     { key:"S", name:"♠", color:"black" },
     { key:"H", name:"♥", color:"red" },
@@ -974,53 +983,31 @@
     return SUITS.find(x=>x.key===s);
   }
 
-  // -----------------------------
-  // App State
-  // -----------------------------
   const state = {
     view: "menu",
-    mode: "solo",         // "solo" | "local2p" | "online"
+    mode: "solo",
     anim: true,
-    first: "random",      // "random" | "p1" | "p2"
+    first: "random",
 
-    // Game
     round: 1,
     hands: { p1: [], p2: [] },
     won: { p1: 0, p2: 0 },
-    parent: "p1",         // current parent id
+    parent: "p1",
     child: "p2",
-    inRound: false,       // waiting for guess
+    inRound: false,
     resolved: false,
 
-    // Current table cards
-    table: {
-      parentCard: null,
-      childCard: null,
-      childFaceDown: true
-    },
+    table: { parentCard: null, childCard: null, childFaceDown: true },
 
-    // Remaining counts for CPU probability (unrevealed in hands)
-    remaining: new Map(), // key "v-s" => count
-    // online
-    net: {
-      enabled: false,
-      pc: null,
-      dc: null,
-      role: null, // "host"|"join"
-      connected: false
-    }
+    remaining: new Map(),
+
+    net: { enabled: false, pc: null, dc: null, role: null, connected: false }
   };
 
-  // -----------------------------
-  // DOM refs
-  // -----------------------------
   const viewMenu = $("viewMenu");
   const viewGame = $("viewGame");
 
-  const btnMenu = $("btnMenu");
-  const btnNew = $("btnNew");
   const btnStart = $("btnStart");
-
   const selFirst = $("selFirst");
   const selAnim = $("selAnim");
 
@@ -1032,6 +1019,9 @@
   const btnCopy = $("btnCopy");
   const btnPasteApply = $("btnPasteApply");
   const onlineStatus = $("onlineStatus");
+
+  const btnMenuInGame = $("btnMenuInGame");
+  const btnNewInGame  = $("btnNewInGame");
 
   const modeBadge = $("modeBadge");
   const roundTitle = $("roundTitle");
@@ -1068,23 +1058,11 @@
   const btnPlayAgain = $("btnPlayAgain");
   const btnBackMenu  = $("btnBackMenu");
 
-  // Card face elements
   const faces = {
-    p1: {
-      rankTop:$("p1RankTop"), suitTop:$("p1SuitTop"),
-      pip:$("p1Pip"),
-      rankBot:$("p1RankBot"), suitBot:$("p1SuitBot")
-    },
-    p2: {
-      rankTop:$("p2RankTop"), suitTop:$("p2SuitTop"),
-      pip:$("p2Pip"),
-      rankBot:$("p2RankBot"), suitBot:$("p2SuitBot")
-    }
+    p1: { rankTop:$("p1RankTop"), suitTop:$("p1SuitTop"), pip:$("p1Pip"), rankBot:$("p1RankBot"), suitBot:$("p1SuitBot") },
+    p2: { rankTop:$("p2RankTop"), suitTop:$("p2SuitTop"), pip:$("p2Pip"), rankBot:$("p2RankBot"), suitBot:$("p2SuitBot") }
   };
 
-  // -----------------------------
-  // Menu mode selection
-  // -----------------------------
   document.querySelectorAll(".modeCard").forEach(el => {
     el.addEventListener("click", () => {
       document.querySelectorAll(".modeCard").forEach(x => x.classList.remove("selected"));
@@ -1097,9 +1075,6 @@
   selFirst.addEventListener("change", () => state.first = selFirst.value);
   selAnim.addEventListener("change", () => state.anim = (selAnim.value === "on"));
 
-  // -----------------------------
-  // View switching
-  // -----------------------------
   function showView(which){
     state.view = which;
     viewMenu.classList.toggle("active", which === "menu");
@@ -1107,22 +1082,12 @@
     overlay.classList.remove("active");
   }
 
-  btnMenu.addEventListener("click", () => showView("menu"));
-  btnNew.addEventListener("click", () => {
-    // New game from anywhere using current menu settings
-    if(state.view !== "menu"){
-      startGame();
-    }
-  });
-
+  btnMenuInGame.addEventListener("click", () => showView("menu"));
+  btnNewInGame.addEventListener("click", () => startGame());
   btnStart.addEventListener("click", () => startGame());
-
   btnPlayAgain.addEventListener("click", () => startGame());
   btnBackMenu.addEventListener("click", () => showView("menu"));
 
-  // -----------------------------
-  // Rendering helpers
-  // -----------------------------
   function setToast(kind, icon, html){
     toast.style.display = "flex";
     toast.classList.remove("ok","bad","neutral");
@@ -1130,9 +1095,7 @@
     toastIcon.textContent = icon;
     toastMsg.innerHTML = html;
   }
-  function hideToast(){
-    toast.style.display = "none";
-  }
+  function hideToast(){ toast.style.display = "none"; }
 
   function renderCardFace(player, card){
     const f = faces[player];
@@ -1142,10 +1105,7 @@
       f.suitTop.textContent = "?";
       f.suitBot.textContent = "?";
       f.pip.textContent = "?";
-      // reset color classes
-      [f.rankTop,f.rankBot,f.suitTop,f.suitBot,f.pip].forEach(n => {
-        n.classList.remove("red","black");
-      });
+      [f.rankTop,f.rankBot,f.suitTop,f.suitBot,f.pip].forEach(n => n.classList.remove("red","black"));
       return;
     }
     const rank = valueToRank(card.v);
@@ -1170,7 +1130,6 @@
   }
 
   function updateHUD(){
-    // Names / tags
     if(state.mode === "solo"){
       tagP1.textContent = "あなた";
       tagP2.textContent = "CPU";
@@ -1192,26 +1151,19 @@
     }
 
     roundTitle.textContent = `ラウンド ${state.round}`;
-
-    // roles
     roleP1.textContent = (state.parent === "p1") ? "親（表）" : "子（予想）";
     roleP2.textContent = (state.parent === "p2") ? "親（表）" : "子（予想）";
 
-    // active dot = child turn waiting
     const waiting = state.inRound && !state.resolved;
     dotP1.classList.toggle("active", waiting && state.child === "p1");
     dotP2.classList.toggle("active", waiting && state.child === "p2");
 
-    // hand count
     handP1.textContent = state.hands.p1.length;
     handP2.textContent = state.hands.p2.length;
 
-    // score
     scoreP1.textContent = state.won.p1;
     scoreP2.textContent = state.won.p2;
 
-    // table card faces
-    // parent card always face up
     if(state.parent === "p1"){
       renderCardFace("p1", state.table.parentCard);
       setCardFlip("p1", !!state.table.parentCard);
@@ -1223,6 +1175,8 @@
       renderCardFace("p1", state.table.childCard);
       setCardFlip("p1", state.table.childFaceDown ? false : !!state.table.childCard);
     }
+
+    if(state.mode === "online"){ adjustLabelsForOnline(); }
   }
 
   function setControlsEnabled(enabled){
@@ -1232,9 +1186,6 @@
 
   function animDelay(ms){ return state.anim ? sleep(ms) : sleep(0); }
 
-  // -----------------------------
-  // Remaining counts (for CPU decisions)
-  // -----------------------------
   function keyOf(card){ return `${card.v}-${card.s}`; }
   function initRemainingFromHands(){
     state.remaining = new Map();
@@ -1251,8 +1202,6 @@
     else state.remaining.set(k, cur - 1);
   }
   function remainingProbComparedTo(parentV){
-    // child card is uniformly random among remaining (unknown) cards
-    // compute P(>parentV) and P(<parentV)
     let gt=0, lt=0, total=0;
     for(const [k, cnt] of state.remaining.entries()){
       const v = parseInt(k.split("-")[0], 10);
@@ -1264,9 +1213,6 @@
     return {gt: gt/total, lt: lt/total};
   }
 
-  // -----------------------------
-  // Game flow
-  // -----------------------------
   function decideFirstParent(){
     if(state.first === "p1") return "p1";
     if(state.first === "p2") return "p2";
@@ -1285,19 +1231,11 @@
 
   async function startGame(){
     hideToast();
-    // close overlay
     overlay.classList.remove("active");
 
-    // if online selected, require connection or allow local-only preview
-    if(state.mode === "online"){
-      // if not connected, we still allow start but it will ask to connect to play
-      state.net.enabled = true;
-    } else {
-      state.net.enabled = false;
-      teardownOnline();
-    }
+    if(state.mode === "online"){ state.net.enabled = true; }
+    else { state.net.enabled = false; teardownOnline(); }
 
-    // build and deal deck
     const deck = shuffle(makeDeck());
     state.hands.p1 = deck.slice(0, 26);
     state.hands.p2 = deck.slice(26);
@@ -1316,21 +1254,9 @@
     await beginRound();
   }
 
-  function setHint(text){
-    hintText.textContent = text;
-  }
-
-  function isLocalHuman(player){
-    if(state.mode === "solo") return player === "p1";
-    if(state.mode === "local2p") return true; // both humans
-    if(state.mode === "online") return player === "p1"; // "you" as p1 locally; remote is p2
-    return true;
-  }
+  function setHint(text){ hintText.textContent = text; }
 
   function childCanAct(){
-    // in solo: only if child is p1 (human)
-    // in local2p: always (because both humans use same device)
-    // in online: only if child is local p1; if child is remote, disable and wait
     if(!state.inRound || state.resolved) return false;
     if(state.mode === "local2p") return true;
     if(state.mode === "solo") return state.child === "p1";
@@ -1346,7 +1272,6 @@
   }
 
   async function beginRound(){
-    // if either hand empty -> end
     if(state.hands.p1.length === 0 || state.hands.p2.length === 0){
       return endGame();
     }
@@ -1355,21 +1280,17 @@
     state.resolved = false;
     hideToast();
 
-    // draw top cards: parent face up, child face down on table
     const parentCard = state.hands[state.parent].shift();
     const childCard  = state.hands[state.child].shift();
 
-    // remove parent from remaining immediately (revealed)
     removeFromRemaining(parentCard);
 
     state.table.parentCard = parentCard;
     state.table.childCard = childCard;
     state.table.childFaceDown = true;
 
-    // show parent face up, child back
     updateHUD();
 
-    // guidance
     if(state.mode === "online" && !requireOnlineConnectedOrExplain()){
       setControlsEnabled(false);
       setHint("オンライン接続待ち…（メニューで接続してから新規ゲーム）");
@@ -1377,11 +1298,7 @@
     }
 
     if(state.mode === "solo"){
-      if(state.child === "p1"){
-        setHint("あなたが子：親より HIGH / LOW を選んでください。");
-      } else {
-        setHint("CPUが子：考え中…");
-      }
+      setHint(state.child === "p1" ? "あなたが子：親より HIGH / LOW を選んでください。" : "CPUが子：考え中…");
     } else if(state.mode === "local2p"){
       setHint(`${state.child === "p1" ? "プレイヤー1" : "プレイヤー2"} が子：HIGH / LOW を選んでください。`);
     } else {
@@ -1390,14 +1307,12 @@
 
     setControlsEnabled(childCanAct());
 
-    // CPU turn if needed
     if(state.mode === "solo" && state.child === "p2"){
       await animDelay(450);
       const guess = cpuChooseGuess();
       await resolveRound(guess, "cpu");
     }
 
-    // Online remote child: wait for message
     if(state.mode === "online" && state.child === "p2"){
       setControlsEnabled(false);
     }
@@ -1405,9 +1320,7 @@
 
   function cpuChooseGuess(){
     const pv = state.table.parentCard.v;
-    // compute probabilities on remaining excluding parent already removed
     const {gt, lt} = remainingProbComparedTo(pv);
-    // choose greater probability; if tie, random
     if(Math.abs(gt - lt) < 1e-9) return (Math.random() < 0.5) ? "HIGH" : "LOW";
     return (gt > lt) ? "HIGH" : "LOW";
   }
@@ -1415,7 +1328,6 @@
   async function resolveRound(guess, by){
     if(!state.inRound || state.resolved) return;
 
-    // Online: if local made choice, send; if remote made choice, we already got it
     if(state.mode === "online" && by === "local"){
       if(!state.net.connected){
         setToast("bad","⚠️","オンライン接続がありません。メニューで接続してください。");
@@ -1427,11 +1339,9 @@
     state.resolved = true;
     setControlsEnabled(false);
 
-    // reveal child
     state.table.childFaceDown = false;
     updateHUD();
 
-    // remove child from remaining (now revealed)
     removeFromRemaining(state.table.childCard);
 
     await animDelay(650);
@@ -1450,25 +1360,21 @@
       setToast("neutral","➖", `同じ数字！ <strong>捨て札</strong> になります。`);
     } else if(childWins){
       state.won[state.child] += 2;
-      setToast("ok","✅", `当たり！ 子（${labelOf(state.child)}）が <strong>2枚獲得</strong>。`);
+      setToast("ok","✅", `当たり！ 子が <strong>2枚獲得</strong>。`);
     } else {
       setToast("bad","❌", `はずれ… <strong>捨て札</strong> になります。`);
     }
 
     updateHUD();
-
     await animDelay(850);
 
-    // round clean up (animate-ish by flipping both down)
     if(state.anim){
-      // flip down quickly for next round
       setCardFlip("p1", false);
       setCardFlip("p2", false);
       await sleep(220);
     }
     resetTable();
 
-    // swap roles
     const oldParent = state.parent;
     state.parent = state.child;
     state.child = oldParent;
@@ -1478,12 +1384,7 @@
 
     updateHUD();
 
-    // notify remote of round step only if online and local is "host" authoritative
     if(state.mode === "online" && state.net.connected){
-      // keep both sides deterministic by sharing hands? We can't without revealing.
-      // Instead: host simulates full game and sends state updates.
-      // So in online mode: HOST is authoritative simulator; JOIN is a viewer/controller for their guess.
-      // If we are JOIN, do not auto-advance; we wait for host updates.
       if(state.net.role === "host"){
         sendNet({t:"state", snapshot: exportNetSnapshot()});
       }
@@ -1492,26 +1393,18 @@
     await animDelay(250);
 
     if(state.mode === "online" && state.net.connected && state.net.role === "join"){
-      // join waits for host state updates to continue
       return;
     }
 
     await beginRound();
   }
 
-  function labelOf(p){
-    if(state.mode === "solo") return p === "p1" ? "あなた" : "CPU";
-    if(state.mode === "local2p") return p === "p1" ? "プレイヤー1" : "プレイヤー2";
-    return p === "p1" ? "あなた" : "相手";
-  }
-
   function endGame(){
-    // decide winner
     const a = state.won.p1;
     const b = state.won.p2;
     let title = "引き分け";
-    if(a > b) title = `${labelOf("p1")} の勝ち！`;
-    else if(b > a) title = `${labelOf("p2")} の勝ち！`;
+    if(a > b) title = "プレイヤー1 の勝ち！";
+    else if(b > a) title = "プレイヤー2 の勝ち！";
 
     endTitle.textContent = title;
     endDesc.textContent = `全 ${a+b} 枚の獲得（捨て札を除く）。`;
@@ -1527,9 +1420,6 @@
     }
   }
 
-  // -----------------------------
-  // Controls
-  // -----------------------------
   btnHigh.addEventListener("click", () => {
     if(!childCanAct()) return;
     resolveRound("HIGH", (state.mode === "online") ? "local" : "local");
@@ -1539,14 +1429,8 @@
     resolveRound("LOW", (state.mode === "online") ? "local" : "local");
   });
 
-  // -----------------------------
-  // Online beta (WebRTC, manual signaling)
-  // - Host is authoritative (simulates deck/hands).
-  // - Join sends guesses when it's their child turn; host sends snapshots.
-  // -----------------------------
-  function setOnlineStatus(text){
-    onlineStatus.textContent = text || "";
-  }
+  // --- Online (same as before) ---
+  function setOnlineStatus(text){ onlineStatus.textContent = text || ""; }
 
   function teardownOnline(){
     try{ state.net.dc && state.net.dc.close(); }catch{}
@@ -1572,20 +1456,10 @@
 
     pc.onconnectionstatechange = () => {
       setOnlineStatus(`接続状態: ${pc.connectionState}`);
-      if(pc.connectionState === "connected"){
-        state.net.connected = true;
-      }
-      if(["failed","disconnected","closed"].includes(pc.connectionState)){
-        state.net.connected = false;
-      }
+      state.net.connected = (pc.connectionState === "connected");
+      if(["failed","disconnected","closed"].includes(pc.connectionState)) state.net.connected = false;
       updateHUD();
-      if(state.view === "game"){
-        setControlsEnabled(childCanAct());
-      }
-    };
-
-    pc.onicecandidate = () => {
-      // Wait for gathering to complete; we'll serialize via getLocalDescription() after a short delay.
+      if(state.view === "game") setControlsEnabled(childCanAct());
     };
 
     if(role === "host"){
@@ -1595,12 +1469,9 @@
 
       const offer = await pc.createOffer();
       await pc.setLocalDescription(offer);
-
-      // wait ICE gather (best-effort)
       await sleep(900);
       taSignal.value = JSON.stringify(pc.localDescription);
       setOnlineStatus("Offer を生成しました。相手にコピーして送ってください。");
-
     } else {
       pc.ondatachannel = (ev) => {
         state.net.dc = ev.channel;
@@ -1614,14 +1485,9 @@
     dc.onopen = () => {
       state.net.connected = true;
       setOnlineStatus("データ通信OK（接続完了）");
-      // If join: request state
-      if(state.net.role === "join"){
-        sendNet({t:"hello"});
-      }
+      if(state.net.role === "join") sendNet({t:"hello"});
       updateHUD();
-      if(state.view === "game"){
-        setControlsEnabled(childCanAct());
-      }
+      if(state.view === "game") setControlsEnabled(childCanAct());
     };
     dc.onclose = () => {
       state.net.connected = false;
@@ -1629,12 +1495,7 @@
       updateHUD();
     };
     dc.onmessage = (ev) => {
-      try{
-        const msg = JSON.parse(ev.data);
-        onNetMessage(msg);
-      }catch{
-        // ignore
-      }
+      try{ onNetMessage(JSON.parse(ev.data)); }catch{}
     };
   }
 
@@ -1644,8 +1505,6 @@
   }
 
   function exportNetSnapshot(){
-    // Host shares enough to let join render without leaking unrevealed cards.
-    // We will NOT share hands. Join trusts host for displayed table cards + counters.
     return {
       round: state.round,
       won: {...state.won},
@@ -1656,7 +1515,6 @@
       resolved: state.resolved,
       table: {
         parentCard: state.table.parentCard,
-        // child card may be hidden if faceDown:
         childCard: state.table.childFaceDown ? null : state.table.childCard,
         childFaceDown: state.table.childFaceDown
       }
@@ -1666,7 +1524,6 @@
   function applyNetSnapshot(s){
     state.round = s.round;
     state.won = {...s.won};
-    // keep local "hands" arrays irrelevant; just show counts
     state.hands.p1 = new Array(s.handsCount.p1).fill({v:0,s:"S"});
     state.hands.p2 = new Array(s.handsCount.p2).fill({v:0,s:"S"});
     state.parent = s.parent;
@@ -1675,20 +1532,14 @@
     state.resolved = s.resolved;
     state.table.parentCard = s.table.parentCard;
     state.table.childFaceDown = s.table.childFaceDown;
-    // if host didn't send childCard (hidden), keep placeholder
     state.table.childCard = s.table.childCard || (state.table.childFaceDown ? state.table.childCard : null);
 
-    // For join: if childFaceDown and host didn't send it, show back
     updateHUD();
 
     if(state.view === "game"){
       if(state.inRound && !state.resolved){
-        if(state.child === "p2"){
-          setHint("あなたが子：HIGH / LOW を選んで送信します。");
-        }else{
-          setHint("相手の選択待ち…");
-        }
-        setControlsEnabled(state.net.connected && state.child === "p2"); // join is p2
+        setHint("オンライン：進行中…");
+        setControlsEnabled(state.net.connected && state.child === "p2");
       }
     }
   }
@@ -1697,7 +1548,6 @@
     if(!msg || !msg.t) return;
 
     if(msg.t === "hello" && state.net.role === "host"){
-      // send snapshot immediately
       sendNet({t:"state", snapshot: exportNetSnapshot()});
       return;
     }
@@ -1708,7 +1558,6 @@
     }
 
     if(msg.t === "guess" && state.net.role === "host"){
-      // Remote (join) made guess. Only accept if it's their child turn.
       if(state.mode !== "online") return;
       if(!state.inRound || state.resolved) return;
       if(state.child !== "p2") return;
@@ -1763,18 +1612,12 @@
   }
 
   btnHost.addEventListener("click", async () => {
-    try{
-      await createPeer("host");
-    }catch(e){
-      setOnlineStatus("ホスト作成に失敗しました。HTTPS環境（GitHub Pages等）で試してください。");
-    }
+    try{ await createPeer("host"); }
+    catch{ setOnlineStatus("ホスト作成に失敗しました。HTTPS環境（GitHub Pages等）で試してください。"); }
   });
   btnJoin.addEventListener("click", async () => {
-    try{
-      await createPeer("join");
-    }catch(e){
-      setOnlineStatus("参加に失敗しました。HTTPS環境（GitHub Pages等）で試してください。");
-    }
+    try{ await createPeer("join"); }
+    catch{ setOnlineStatus("参加に失敗しました。HTTPS環境（GitHub Pages等）で試してください。"); }
   });
   btnOnlineReset.addEventListener("click", () => {
     teardownOnline();
@@ -1786,29 +1629,16 @@
       await navigator.clipboard.writeText(taSignal.value);
       setOnlineStatus("コピーしました。");
     }catch{
-      setOnlineStatus("コピーできませんでした（ブラウザ権限の可能性）。手動でコピーしてください。");
+      setOnlineStatus("コピーできませんでした。手動でコピーしてください。");
     }
   });
   btnPasteApply.addEventListener("click", async () => {
-    try{
-      await applySignalText();
-    }catch{
-      setOnlineStatus("反映に失敗しました。順番（Offer→Answer）を確認してください。");
-    }
+    try{ await applySignalText(); }
+    catch{ setOnlineStatus("反映に失敗しました。順番（Offer→Answer）を確認してください。"); }
   });
 
-  // -----------------------------
-  // Online mode: swap local roles display
-  // - On join side, you are p2 (remote to host).
-  // - For simplicity, this file assumes one browser = host (p1), other browser = join (p2).
-  // -----------------------------
   function adjustLabelsForOnline(){
     if(state.mode !== "online") return;
-    // Host is "p1" local
-    // Join is "p2" local, but our UI code assumes local is p1.
-    // To keep it simple for a single file, we keep local as p1 always.
-    // Therefore: online join should also use this same file, but they will see themselves as "あなた" on p1 too.
-    // To avoid confusion, we instead set tags when join connects:
     if(state.net.role === "join"){
       tagP1.textContent = "相手";
       tagP2.textContent = "あなた";
@@ -1818,19 +1648,6 @@
     }
   }
 
-  // Call it in updateHUD hook for online
-  const _updateHUD = updateHUD;
-  updateHUD = function(){
-    _updateHUD();
-    if(state.mode === "online"){
-      adjustLabelsForOnline();
-      // For join: child action should be on p2, but our buttons are global; we gate in applyNetSnapshot.
-    }
-  };
-
-  // -----------------------------
-  // Initial UI
-  // -----------------------------
   showView("menu");
   setHint("メニューから開始してください。");
 })();
