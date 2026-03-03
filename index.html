@@ -1,0 +1,1839 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>High & Low</title>
+  <meta name="theme-color" content="#0b1220" />
+  <style>
+    :root{
+      --bg:#070b14;
+      --panel:#0b1220;
+      --card:#f7f7fb;
+      --card2:#ffffff;
+      --text:#e9eefc;
+      --muted:#9db0d0;
+      --accent:#6ee7ff;
+      --accent2:#a78bfa;
+      --danger:#fb7185;
+      --ok:#34d399;
+      --shadow: 0 18px 55px rgba(0,0,0,.45);
+      --radius: 18px;
+
+      /* responsive card sizing */
+      --cardW: clamp(92px, 18vw, 150px);
+      --cardH: calc(var(--cardW) * 1.38);
+      --gap: clamp(10px, 2.2vw, 18px);
+      --pad: clamp(12px, 2.8vw, 18px);
+      --btnH: clamp(42px, 6vh, 52px);
+      --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic UI", "Yu Gothic", "Meiryo", sans-serif;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:var(--font);
+      color:var(--text);
+      background:
+        radial-gradient(1100px 700px at 20% -10%, rgba(110,231,255,.18), transparent 60%),
+        radial-gradient(900px 600px at 90% 10%, rgba(167,139,250,.18), transparent 55%),
+        radial-gradient(900px 700px at 60% 120%, rgba(52,211,153,.12), transparent 60%),
+        linear-gradient(180deg, #050814, #040611 60%, #03040c);
+      overflow-x:hidden;
+    }
+
+    .app{
+      min-height:100%;
+      display:flex;
+      align-items:stretch;
+      justify-content:center;
+      padding: max(12px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right))
+               max(12px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+    }
+
+    .shell{
+      width:min(980px, 100%);
+      display:flex;
+      flex-direction:column;
+      gap: var(--gap);
+    }
+
+    header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width:0;
+    }
+    .logo{
+      width:44px;height:44px;border-radius:14px;
+      background: linear-gradient(135deg, rgba(110,231,255,.9), rgba(167,139,250,.9));
+      box-shadow: 0 14px 40px rgba(110,231,255,.12);
+      position:relative;
+      overflow:hidden;
+    }
+    .logo:before{
+      content:"";
+      position:absolute; inset:-40%;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.8), transparent 40%),
+                  radial-gradient(circle at 70% 70%, rgba(255,255,255,.35), transparent 45%);
+      transform: rotate(20deg);
+      animation: shimmer 3.8s ease-in-out infinite;
+      opacity:.9;
+    }
+    @keyframes shimmer{
+      0%,100%{transform:rotate(20deg) translateY(-6px)}
+      50%{transform:rotate(20deg) translateY(8px)}
+    }
+    .titleWrap{min-width:0}
+    h1{
+      font-size: clamp(18px, 2.6vw, 26px);
+      margin:0;
+      letter-spacing:.4px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .subtitle{
+      font-size:12px;
+      color:var(--muted);
+      margin-top:2px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .topBtns{display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end}
+    button, .btn{
+      appearance:none;
+      border:none;
+      height: var(--btnH);
+      padding: 0 14px;
+      border-radius: 14px;
+      color:var(--text);
+      background: rgba(255,255,255,.06);
+      box-shadow: 0 0 0 1px rgba(255,255,255,.08) inset;
+      cursor:pointer;
+      font-weight:600;
+      letter-spacing:.2px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      user-select:none;
+      transition: transform .12s ease, background .18s ease, box-shadow .18s ease, opacity .18s ease;
+      min-width: 120px;
+    }
+    button:hover{background: rgba(255,255,255,.085)}
+    button:active{transform: translateY(1px) scale(.99)}
+    button:disabled{opacity:.45; cursor:not-allowed}
+    .primary{
+      background: linear-gradient(135deg, rgba(110,231,255,.22), rgba(167,139,250,.22));
+      box-shadow: 0 0 0 1px rgba(110,231,255,.22) inset, 0 10px 30px rgba(110,231,255,.08);
+    }
+    .danger{
+      background: rgba(251,113,133,.12);
+      box-shadow: 0 0 0 1px rgba(251,113,133,.22) inset;
+    }
+    .ghost{
+      background: transparent;
+      box-shadow: 0 0 0 1px rgba(255,255,255,.14) inset;
+    }
+
+    main{
+      background: rgba(255,255,255,.04);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255,255,255,.08);
+      overflow:hidden;
+      position:relative;
+      min-height: 560px;
+    }
+
+    /* views */
+    .view{display:none; padding: var(--pad)}
+    .view.active{display:block}
+
+    /* Menu */
+    .menuGrid{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: var(--gap);
+      align-items:stretch;
+    }
+    @media (max-width: 860px){
+      .menuGrid{grid-template-columns:1fr}
+      main{min-height: 640px}
+    }
+
+    .panel{
+      background: rgba(11,18,32,.72);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: var(--radius);
+      padding: clamp(14px, 3vw, 18px);
+      box-shadow: 0 0 0 1px rgba(0,0,0,.18) inset;
+    }
+
+    .hero{
+      display:flex;
+      flex-direction:column;
+      gap: 12px;
+    }
+    .hero h2{
+      margin:0;
+      font-size: clamp(18px, 2.4vw, 24px);
+      letter-spacing:.3px;
+    }
+    .hero p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.65;
+      font-size: 14px;
+    }
+
+    .modeCards{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-top: 10px;
+    }
+    .modeCard{
+      display:flex;
+      gap: 12px;
+      padding: 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.03);
+      cursor:pointer;
+      transition: transform .12s ease, background .18s ease, border-color .18s ease;
+      user-select:none;
+    }
+    .modeCard:hover{transform: translateY(-1px); background: rgba(255,255,255,.05)}
+    .modeCard.selected{
+      border-color: rgba(110,231,255,.35);
+      background: linear-gradient(135deg, rgba(110,231,255,.08), rgba(167,139,250,.06));
+      box-shadow: 0 0 0 1px rgba(110,231,255,.18) inset;
+    }
+    .modeIcon{
+      width:44px; height:44px; border-radius: 14px;
+      background: rgba(255,255,255,.06);
+      display:grid; place-items:center;
+      flex: 0 0 auto;
+      box-shadow: 0 0 0 1px rgba(255,255,255,.08) inset;
+      font-size: 20px;
+    }
+    .modeText{min-width:0}
+    .modeTitle{
+      font-weight:800;
+      letter-spacing:.2px;
+      margin:2px 0 4px;
+    }
+    .modeDesc{
+      margin:0;
+      color:var(--muted);
+      font-size: 13px;
+      line-height:1.55;
+    }
+
+    .menuRight{
+      display:flex;
+      flex-direction:column;
+      gap: var(--gap);
+    }
+
+    .rules h3, .settings h3, .onlineBox h3{
+      margin:0 0 10px;
+      font-size: 15px;
+      letter-spacing:.2px;
+    }
+    .rules ul{
+      margin:0;
+      padding-left: 18px;
+      color:var(--muted);
+      line-height:1.6;
+      font-size: 13px;
+    }
+    .settingsRow{
+      display:flex;
+      flex-wrap:wrap;
+      gap: 10px;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .pill{
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.08);
+      color: var(--muted);
+      font-size: 13px;
+    }
+    select{
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.12);
+      color: var(--text);
+      height: 38px;
+      border-radius: 12px;
+      padding: 0 10px;
+      outline:none;
+      font-weight:700;
+      cursor:pointer;
+    }
+    .menuActions{
+      display:flex;
+      gap: 10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+      margin-top: 10px;
+    }
+
+    /* Game */
+    .gameTop{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap: var(--gap);
+      flex-wrap:wrap;
+    }
+
+    .scoreBox{
+      display:flex;
+      gap: 10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .score{
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 16px;
+      padding: 10px 12px;
+      min-width: 150px;
+    }
+    .score .label{
+      color: var(--muted);
+      font-size: 12px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+    }
+    .score .value{
+      margin-top: 6px;
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing:.4px;
+    }
+    .badge{
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.12);
+      color: var(--muted);
+      background: rgba(255,255,255,.03);
+      white-space:nowrap;
+    }
+
+    .roundInfo{
+      flex: 1 1 280px;
+      background: rgba(11,18,32,.55);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: var(--radius);
+      padding: 12px 14px;
+      min-width: min(420px, 100%);
+    }
+    .roundInfo .row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+      flex-wrap:wrap;
+    }
+    .roundInfo .row strong{font-size: 14px}
+    .roundInfo .small{
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height:1.55;
+    }
+
+    .table{
+      margin-top: var(--gap);
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: var(--gap);
+    }
+
+    .arena{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--gap);
+      align-items:stretch;
+    }
+    @media (max-width: 720px){
+      .arena{grid-template-columns:1fr}
+    }
+
+    .slot{
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: var(--radius);
+      padding: 14px;
+      display:flex;
+      flex-direction:column;
+      gap: 12px;
+      position:relative;
+      overflow:hidden;
+      min-height: calc(var(--cardH) + 110px);
+    }
+    .slot:before{
+      content:"";
+      position:absolute; inset:-30%;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(110,231,255,.09), transparent 52%),
+        radial-gradient(circle at 70% 70%, rgba(167,139,250,.08), transparent 52%);
+      filter: blur(0px);
+      opacity:.9;
+      pointer-events:none;
+    }
+    .slotHeader{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+      z-index:1;
+    }
+    .slotHeader .name{
+      font-weight:900;
+      letter-spacing:.2px;
+      font-size: 14px;
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      min-width:0;
+    }
+    .roleTag{
+      font-size:11px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.12);
+      color: var(--muted);
+      background: rgba(255,255,255,.03);
+      flex: 0 0 auto;
+    }
+    .handTag{
+      font-size: 12px;
+      color: var(--muted);
+      z-index:1;
+      display:flex;
+      align-items:center;
+      gap: 8px;
+    }
+    .dot{
+      width:8px;height:8px;border-radius:50%;
+      background: rgba(255,255,255,.18);
+      box-shadow: 0 0 0 1px rgba(0,0,0,.2) inset;
+    }
+    .dot.active{background: rgba(52,211,153,.8); box-shadow: 0 0 20px rgba(52,211,153,.18)}
+    .cardStage{
+      z-index:1;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex:1;
+      min-height: var(--cardH);
+    }
+
+    /* Card */
+    .cardWrap{
+      width: var(--cardW);
+      height: var(--cardH);
+      perspective: 1000px;
+      position:relative;
+    }
+    .card{
+      width:100%;
+      height:100%;
+      position:absolute;
+      inset:0;
+      transform-style: preserve-3d;
+      transition: transform .7s cubic-bezier(.2,.8,.2,1);
+      will-change: transform;
+    }
+    .card.faceUp{transform: rotateY(0deg)}
+    .card.faceDown{transform: rotateY(180deg)}
+    .cardSide{
+      position:absolute; inset:0;
+      border-radius: 18px;
+      backface-visibility: hidden;
+      overflow:hidden;
+      box-shadow: 0 18px 45px rgba(0,0,0,.35);
+      border: 1px solid rgba(0,0,0,.18);
+      display:flex;
+      align-items:stretch;
+      justify-content:stretch;
+    }
+    .front{
+      background: linear-gradient(180deg, var(--card2), var(--card));
+      color:#0b1220;
+    }
+    .back{
+      transform: rotateY(180deg);
+      background:
+        radial-gradient(circle at 25% 20%, rgba(255,255,255,.25), transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(255,255,255,.2), transparent 45%),
+        linear-gradient(135deg, rgba(110,231,255,.55), rgba(167,139,250,.55));
+      border: 1px solid rgba(255,255,255,.25);
+    }
+    .back .pattern{
+      position:absolute; inset:10px;
+      border-radius: 14px;
+      border: 1px dashed rgba(255,255,255,.35);
+      opacity:.9;
+    }
+    .frontInner{
+      padding: 10px 12px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      width:100%;
+      height:100%;
+    }
+    .rank{
+      font-weight: 1000;
+      font-size: 22px;
+      letter-spacing:.2px;
+      line-height:1;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 8px;
+    }
+    .suit{
+      font-size: 18px;
+      filter: drop-shadow(0 1px 0 rgba(0,0,0,.08));
+    }
+    .pip{
+      flex:1;
+      display:grid;
+      place-items:center;
+      font-size: 44px;
+      opacity:.88;
+    }
+    .corner{
+      display:flex;
+      flex-direction:column;
+      gap: 2px;
+      font-weight:900;
+      opacity:.9;
+    }
+    .corner.bottom{
+      transform: rotate(180deg);
+      align-self:flex-end;
+    }
+    .red{color:#d11a2a}
+    .black{color:#0b1220}
+
+    /* Controls */
+    .controls{
+      display:flex;
+      flex-wrap:wrap;
+      gap: 10px;
+      align-items:center;
+      justify-content:center;
+      padding: 12px;
+      background: rgba(11,18,32,.55);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: var(--radius);
+    }
+    .controls .hint{
+      color: var(--muted);
+      font-size: 12px;
+      width:100%;
+      text-align:center;
+      line-height:1.5;
+    }
+    .hlBtns{
+      display:flex;
+      gap: 10px;
+      width:100%;
+      justify-content:center;
+      flex-wrap:wrap;
+    }
+    .hl{
+      min-width: 160px;
+    }
+    .hl.high{background: rgba(110,231,255,.14); box-shadow: 0 0 0 1px rgba(110,231,255,.22) inset}
+    .hl.low{background: rgba(167,139,250,.14); box-shadow: 0 0 0 1px rgba(167,139,250,.22) inset}
+
+    .toast{
+      margin-top: var(--gap);
+      padding: 12px 14px;
+      border-radius: var(--radius);
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.03);
+      color: var(--text);
+      line-height:1.55;
+      font-size: 13px;
+      display:flex;
+      align-items:flex-start;
+      gap: 10px;
+    }
+    .toast .pillIcon{
+      width:26px;height:26px;border-radius:10px;
+      display:grid;place-items:center;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.08);
+      flex:0 0 auto;
+    }
+    .toast .msg{color:var(--muted)}
+    .toast strong{color:var(--text)}
+    .toast.ok{border-color: rgba(52,211,153,.25); background: rgba(52,211,153,.06)}
+    .toast.bad{border-color: rgba(251,113,133,.25); background: rgba(251,113,133,.06)}
+    .toast.neutral{border-color: rgba(255,255,255,.10)}
+
+    /* End overlay */
+    .overlay{
+      position:absolute; inset:0;
+      background: rgba(0,0,0,.55);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding: var(--pad);
+      z-index: 50;
+    }
+    .overlay.active{display:flex}
+    .modal{
+      width:min(560px, 100%);
+      background: rgba(11,18,32,.92);
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 22px;
+      box-shadow: 0 22px 90px rgba(0,0,0,.55);
+      padding: 18px;
+    }
+    .modal h2{margin:0 0 10px}
+    .modal p{margin:0 0 10px; color: var(--muted); line-height:1.6}
+    .modal .grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 12px 0;
+    }
+    @media (max-width:520px){ .modal .grid{grid-template-columns:1fr} }
+    .modal .stat{
+      border-radius: 16px;
+      padding: 12px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.03);
+    }
+    .modal .stat .k{color:var(--muted); font-size:12px}
+    .modal .stat .v{font-size:22px; font-weight:900; margin-top:6px}
+    .modal .actions{display:flex; gap: 10px; flex-wrap:wrap; justify-content:flex-end; margin-top: 10px}
+
+    /* Online */
+    textarea{
+      width:100%;
+      min-height: 96px;
+      resize: vertical;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+      color: var(--text);
+      padding: 10px 12px;
+      outline:none;
+      line-height:1.45;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 12px;
+    }
+    .onlineRow{display:flex; gap: 10px; flex-wrap:wrap; align-items:center; justify-content:flex-end}
+    .mini{min-width: 120px; height: 40px; border-radius: 14px}
+    .warn{
+      color: var(--muted);
+      font-size: 12px;
+      line-height:1.55;
+      margin-top: 8px;
+    }
+
+    /* Small footer hint */
+    .footHint{
+      text-align:center;
+      color: rgba(157,176,208,.85);
+      font-size: 12px;
+      padding: 8px 0 2px;
+    }
+
+    /* Motion-reduction */
+    @media (prefers-reduced-motion: reduce){
+      *{animation:none !important; transition:none !important}
+    }
+  </style>
+</head>
+
+<body>
+<div class="app">
+  <div class="shell">
+    <header>
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div class="titleWrap">
+          <h1>High &amp; Low</h1>
+          <div class="subtitle">トランプ(ジョーカー抜き) / 1人用・ローカル対戦・オンラインβ / GitHub Pages対応</div>
+        </div>
+      </div>
+      <div class="topBtns">
+        <button id="btnMenu" class="ghost" title="メニューに戻る">メニュー</button>
+        <button id="btnNew" class="primary" title="新しくゲームを開始">新規ゲーム</button>
+      </div>
+    </header>
+
+    <main>
+      <!-- MENU VIEW -->
+      <section id="viewMenu" class="view active">
+        <div class="menuGrid">
+          <div class="panel hero">
+            <h2>遊び方（High &amp; Low）</h2>
+            <p>
+              親がカードを表に、子がカードを裏のまま置きます。<b>子は「親より大きい/小さい」を予想</b>し、当たれば2枚獲得、外れ/同値は捨て札。<b>親子を交代</b>し、手札がなくなるまで続けます。
+            </p>
+
+            <div class="modeCards" role="list">
+              <div class="modeCard selected" role="listitem" data-mode="solo">
+                <div class="modeIcon">🤖</div>
+                <div class="modeText">
+                  <div class="modeTitle">1人用（CPU戦）</div>
+                  <p class="modeDesc">交互にあなた/CPUが「子」になって予想。スコア（獲得枚数）で勝敗。</p>
+                </div>
+              </div>
+
+              <div class="modeCard" role="listitem" data-mode="local2p">
+                <div class="modeIcon">👥</div>
+                <div class="modeText">
+                  <div class="modeTitle">2人ローカル対戦（同じ端末）</div>
+                  <p class="modeDesc">端末を見せ合って交代プレイ。子の番の人がHigh/Lowを押す。</p>
+                </div>
+              </div>
+
+              <div class="modeCard" role="listitem" data-mode="online">
+                <div class="modeIcon">🌐</div>
+                <div class="modeText">
+                  <div class="modeTitle">オンライン対戦 β（WebRTC）</div>
+                  <p class="modeDesc">サーバ不要（GitHub PagesでOK）。ただし接続用文字列のコピペが必要。</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="menuActions">
+              <button id="btnStart" class="primary">このモードで開始</button>
+            </div>
+          </div>
+
+          <div class="menuRight">
+            <div class="panel rules">
+              <h3>ルール（今回の実装）</h3>
+              <ul>
+                <li>ジョーカーなし52枚。Aは最強（A &gt; K）。</li>
+                <li>各ラウンド：親=表、子=裏→子がHigh/Low選択→子のカードを公開。</li>
+                <li>当たり：子が2枚獲得／外れ・同値：捨て札。</li>
+                <li>ラウンド後に親子交代（常に交代）。</li>
+                <li>手札が尽きたら終了。獲得枚数が多いほうが勝ち。</li>
+              </ul>
+            </div>
+
+            <div class="panel settings">
+              <h3>設定</h3>
+              <div class="settingsRow">
+                <div class="pill">開始の親：
+                  <select id="selFirst">
+                    <option value="random">ランダム</option>
+                    <option value="p1">プレイヤー1（あなた）</option>
+                    <option value="p2">プレイヤー2（CPU/相手）</option>
+                  </select>
+                </div>
+                <div class="pill">演出：
+                  <select id="selAnim">
+                    <option value="on" selected>ON</option>
+                    <option value="off">OFF</option>
+                  </select>
+                </div>
+              </div>
+              <div class="warn">※「オンラインβ」は“接続の手間を最小”にするため、シグナリングをコピペ式にしています（完全サーバレス）。</div>
+            </div>
+
+            <div id="onlineBox" class="panel onlineBox" style="display:none;">
+              <h3>オンラインβ：接続（コピペ）</h3>
+              <div class="warn">
+                片方が「ホスト」を押して Offer をコピー→相手が貼り付けて Answer を生成→ホストが貼り付けて接続、の流れです。
+              </div>
+              <div style="margin-top:10px; display:grid; gap:10px;">
+                <div class="onlineRow">
+                  <button id="btnHost" class="mini primary">ホスト</button>
+                  <button id="btnJoin" class="mini">参加</button>
+                  <button id="btnOnlineReset" class="mini danger">リセット</button>
+                </div>
+                <div>
+                  <div class="warn">テキスト欄（Offer/Answer 用）</div>
+                  <textarea id="taSignal" placeholder="ここにOffer/Answerを貼り付け（または生成された文字列をコピー）"></textarea>
+                  <div class="onlineRow" style="margin-top:10px;">
+                    <button id="btnCopy" class="mini">コピー</button>
+                    <button id="btnPasteApply" class="mini primary">貼付けを反映</button>
+                  </div>
+                  <div id="onlineStatus" class="warn"></div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="footHint">Tip: スマホは縦持ち推奨。表示がはみ出す場合はブラウザの拡大率を100%に戻してください。</div>
+      </section>
+
+      <!-- GAME VIEW -->
+      <section id="viewGame" class="view">
+        <div class="gameTop">
+          <div class="scoreBox">
+            <div class="score">
+              <div class="label"><span>プレイヤー1</span><span id="tagP1" class="badge">あなた</span></div>
+              <div id="scoreP1" class="value">0</div>
+            </div>
+            <div class="score">
+              <div class="label"><span>プレイヤー2</span><span id="tagP2" class="badge">CPU</span></div>
+              <div id="scoreP2" class="value">0</div>
+            </div>
+          </div>
+
+          <div class="roundInfo">
+            <div class="row">
+              <strong id="roundTitle">ラウンド 1</strong>
+              <span id="modeBadge" class="badge">1人用</span>
+            </div>
+            <div class="small" id="roundDesc">
+              子の番の人が「High / Low」を選びます。選択後にカードがめくれて結果が出ます。
+            </div>
+          </div>
+        </div>
+
+        <div class="table">
+          <div class="arena">
+            <div class="slot">
+              <div class="slotHeader">
+                <div class="name">
+                  <span id="nameP1">プレイヤー1</span>
+                  <span id="roleP1" class="roleTag">—</span>
+                </div>
+                <div class="handTag"><span id="dotP1" class="dot"></span>手札 <b id="handP1">26</b></div>
+              </div>
+              <div class="cardStage">
+                <div class="cardWrap" aria-label="プレイヤー1の場札">
+                  <div id="cardP1" class="card faceDown">
+                    <div class="cardSide front">
+                      <div class="frontInner">
+                        <div class="corner top">
+                          <div class="rank"><span id="p1RankTop">?</span><span id="p1SuitTop" class="suit">?</span></div>
+                        </div>
+                        <div class="pip" id="p1Pip">?</div>
+                        <div class="corner bottom">
+                          <div class="rank"><span id="p1RankBot">?</span><span id="p1SuitBot" class="suit">?</span></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="cardSide back">
+                      <div class="pattern"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="slot">
+              <div class="slotHeader">
+                <div class="name">
+                  <span id="nameP2">プレイヤー2</span>
+                  <span id="roleP2" class="roleTag">—</span>
+                </div>
+                <div class="handTag"><span id="dotP2" class="dot"></span>手札 <b id="handP2">26</b></div>
+              </div>
+              <div class="cardStage">
+                <div class="cardWrap" aria-label="プレイヤー2の場札">
+                  <div id="cardP2" class="card faceDown">
+                    <div class="cardSide front">
+                      <div class="frontInner">
+                        <div class="corner top">
+                          <div class="rank"><span id="p2RankTop">?</span><span id="p2SuitTop" class="suit">?</span></div>
+                        </div>
+                        <div class="pip" id="p2Pip">?</div>
+                        <div class="corner bottom">
+                          <div class="rank"><span id="p2RankBot">?</span><span id="p2SuitBot" class="suit">?</span></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="cardSide back">
+                      <div class="pattern"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="controls">
+            <div class="hlBtns">
+              <button id="btnHigh" class="hl high" disabled>HIGH（大きい）</button>
+              <button id="btnLow" class="hl low" disabled>LOW（小さい）</button>
+            </div>
+            <div class="hint" id="hintText">準備中…</div>
+          </div>
+
+          <div id="toast" class="toast neutral" style="display:none;">
+            <div class="pillIcon" id="toastIcon">ℹ️</div>
+            <div class="msg" id="toastMsg"></div>
+          </div>
+        </div>
+
+        <div id="overlay" class="overlay" role="dialog" aria-modal="true" aria-label="ゲーム結果">
+          <div class="modal">
+            <h2 id="endTitle">結果</h2>
+            <p id="endDesc">—</p>
+            <div class="grid">
+              <div class="stat">
+                <div class="k">プレイヤー1 獲得</div>
+                <div class="v" id="endP1">0</div>
+              </div>
+              <div class="stat">
+                <div class="k">プレイヤー2 獲得</div>
+                <div class="v" id="endP2">0</div>
+              </div>
+            </div>
+            <div class="actions">
+              <button id="btnPlayAgain" class="primary">もう一度</button>
+              <button id="btnBackMenu" class="ghost">メニューへ</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <div class="footHint">© High &amp; Low — static HTML (GitHub Pages)</div>
+  </div>
+</div>
+
+<script>
+(() => {
+  "use strict";
+
+  // -----------------------------
+  // Utilities
+  // -----------------------------
+  const $ = (id) => document.getElementById(id);
+  const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+  function clamp(n, a, b){ return Math.max(a, Math.min(b, n)); }
+  function shuffle(arr){
+    for(let i=arr.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  // Card representation
+  // value: 2..14 (A=14)
+  const SUITS = [
+    { key:"S", name:"♠", color:"black" },
+    { key:"H", name:"♥", color:"red" },
+    { key:"D", name:"♦", color:"red" },
+    { key:"C", name:"♣", color:"black" },
+  ];
+  function valueToRank(v){
+    if(v <= 10) return String(v);
+    if(v === 11) return "J";
+    if(v === 12) return "Q";
+    if(v === 13) return "K";
+    return "A";
+  }
+  function makeDeck(){
+    const deck=[];
+    for(const s of SUITS){
+      for(let v=2; v<=14; v++){
+        deck.push({v, s:s.key});
+      }
+    }
+    return deck;
+  }
+  function suitMeta(s){
+    return SUITS.find(x=>x.key===s);
+  }
+
+  // -----------------------------
+  // App State
+  // -----------------------------
+  const state = {
+    view: "menu",
+    mode: "solo",         // "solo" | "local2p" | "online"
+    anim: true,
+    first: "random",      // "random" | "p1" | "p2"
+
+    // Game
+    round: 1,
+    hands: { p1: [], p2: [] },
+    won: { p1: 0, p2: 0 },
+    parent: "p1",         // current parent id
+    child: "p2",
+    inRound: false,       // waiting for guess
+    resolved: false,
+
+    // Current table cards
+    table: {
+      parentCard: null,
+      childCard: null,
+      childFaceDown: true
+    },
+
+    // Remaining counts for CPU probability (unrevealed in hands)
+    remaining: new Map(), // key "v-s" => count
+    // online
+    net: {
+      enabled: false,
+      pc: null,
+      dc: null,
+      role: null, // "host"|"join"
+      connected: false
+    }
+  };
+
+  // -----------------------------
+  // DOM refs
+  // -----------------------------
+  const viewMenu = $("viewMenu");
+  const viewGame = $("viewGame");
+
+  const btnMenu = $("btnMenu");
+  const btnNew = $("btnNew");
+  const btnStart = $("btnStart");
+
+  const selFirst = $("selFirst");
+  const selAnim = $("selAnim");
+
+  const onlineBox = $("onlineBox");
+  const btnHost = $("btnHost");
+  const btnJoin = $("btnJoin");
+  const btnOnlineReset = $("btnOnlineReset");
+  const taSignal = $("taSignal");
+  const btnCopy = $("btnCopy");
+  const btnPasteApply = $("btnPasteApply");
+  const onlineStatus = $("onlineStatus");
+
+  const modeBadge = $("modeBadge");
+  const roundTitle = $("roundTitle");
+  const roundDesc = $("roundDesc");
+
+  const nameP1 = $("nameP1");
+  const nameP2 = $("nameP2");
+  const roleP1 = $("roleP1");
+  const roleP2 = $("roleP2");
+  const handP1 = $("handP1");
+  const handP2 = $("handP2");
+  const dotP1 = $("dotP1");
+  const dotP2 = $("dotP2");
+  const scoreP1 = $("scoreP1");
+  const scoreP2 = $("scoreP2");
+  const tagP1 = $("tagP1");
+  const tagP2 = $("tagP2");
+
+  const cardP1 = $("cardP1");
+  const cardP2 = $("cardP2");
+  const btnHigh = $("btnHigh");
+  const btnLow  = $("btnLow");
+  const hintText = $("hintText");
+
+  const toast = $("toast");
+  const toastMsg = $("toastMsg");
+  const toastIcon = $("toastIcon");
+
+  const overlay = $("overlay");
+  const endTitle = $("endTitle");
+  const endDesc  = $("endDesc");
+  const endP1    = $("endP1");
+  const endP2    = $("endP2");
+  const btnPlayAgain = $("btnPlayAgain");
+  const btnBackMenu  = $("btnBackMenu");
+
+  // Card face elements
+  const faces = {
+    p1: {
+      rankTop:$("p1RankTop"), suitTop:$("p1SuitTop"),
+      pip:$("p1Pip"),
+      rankBot:$("p1RankBot"), suitBot:$("p1SuitBot")
+    },
+    p2: {
+      rankTop:$("p2RankTop"), suitTop:$("p2SuitTop"),
+      pip:$("p2Pip"),
+      rankBot:$("p2RankBot"), suitBot:$("p2SuitBot")
+    }
+  };
+
+  // -----------------------------
+  // Menu mode selection
+  // -----------------------------
+  document.querySelectorAll(".modeCard").forEach(el => {
+    el.addEventListener("click", () => {
+      document.querySelectorAll(".modeCard").forEach(x => x.classList.remove("selected"));
+      el.classList.add("selected");
+      state.mode = el.dataset.mode;
+      onlineBox.style.display = (state.mode === "online") ? "block" : "none";
+    });
+  });
+
+  selFirst.addEventListener("change", () => state.first = selFirst.value);
+  selAnim.addEventListener("change", () => state.anim = (selAnim.value === "on"));
+
+  // -----------------------------
+  // View switching
+  // -----------------------------
+  function showView(which){
+    state.view = which;
+    viewMenu.classList.toggle("active", which === "menu");
+    viewGame.classList.toggle("active", which === "game");
+    overlay.classList.remove("active");
+  }
+
+  btnMenu.addEventListener("click", () => showView("menu"));
+  btnNew.addEventListener("click", () => {
+    // New game from anywhere using current menu settings
+    if(state.view !== "menu"){
+      startGame();
+    }
+  });
+
+  btnStart.addEventListener("click", () => startGame());
+
+  btnPlayAgain.addEventListener("click", () => startGame());
+  btnBackMenu.addEventListener("click", () => showView("menu"));
+
+  // -----------------------------
+  // Rendering helpers
+  // -----------------------------
+  function setToast(kind, icon, html){
+    toast.style.display = "flex";
+    toast.classList.remove("ok","bad","neutral");
+    toast.classList.add(kind);
+    toastIcon.textContent = icon;
+    toastMsg.innerHTML = html;
+  }
+  function hideToast(){
+    toast.style.display = "none";
+  }
+
+  function renderCardFace(player, card){
+    const f = faces[player];
+    if(!card){
+      f.rankTop.textContent = "?";
+      f.rankBot.textContent = "?";
+      f.suitTop.textContent = "?";
+      f.suitBot.textContent = "?";
+      f.pip.textContent = "?";
+      // reset color classes
+      [f.rankTop,f.rankBot,f.suitTop,f.suitBot,f.pip].forEach(n => {
+        n.classList.remove("red","black");
+      });
+      return;
+    }
+    const rank = valueToRank(card.v);
+    const sm = suitMeta(card.s);
+    f.rankTop.textContent = rank;
+    f.rankBot.textContent = rank;
+    f.suitTop.textContent = sm.name;
+    f.suitBot.textContent = sm.name;
+    f.pip.textContent = sm.name;
+
+    const cls = (sm.color === "red") ? "red" : "black";
+    [f.rankTop,f.rankBot,f.suitTop,f.suitBot,f.pip].forEach(n => {
+      n.classList.remove("red","black");
+      n.classList.add(cls);
+    });
+  }
+
+  function setCardFlip(player, faceUp){
+    const el = (player === "p1") ? cardP1 : cardP2;
+    el.classList.toggle("faceUp", !!faceUp);
+    el.classList.toggle("faceDown", !faceUp);
+  }
+
+  function updateHUD(){
+    // Names / tags
+    if(state.mode === "solo"){
+      tagP1.textContent = "あなた";
+      tagP2.textContent = "CPU";
+      nameP1.textContent = "プレイヤー1";
+      nameP2.textContent = "プレイヤー2";
+      modeBadge.textContent = "1人用";
+    } else if(state.mode === "local2p"){
+      tagP1.textContent = "P1";
+      tagP2.textContent = "P2";
+      nameP1.textContent = "プレイヤー1";
+      nameP2.textContent = "プレイヤー2";
+      modeBadge.textContent = "2人ローカル";
+    } else {
+      tagP1.textContent = "あなた";
+      tagP2.textContent = "相手";
+      nameP1.textContent = "プレイヤー1";
+      nameP2.textContent = "プレイヤー2";
+      modeBadge.textContent = "オンラインβ";
+    }
+
+    roundTitle.textContent = `ラウンド ${state.round}`;
+
+    // roles
+    roleP1.textContent = (state.parent === "p1") ? "親（表）" : "子（予想）";
+    roleP2.textContent = (state.parent === "p2") ? "親（表）" : "子（予想）";
+
+    // active dot = child turn waiting
+    const waiting = state.inRound && !state.resolved;
+    dotP1.classList.toggle("active", waiting && state.child === "p1");
+    dotP2.classList.toggle("active", waiting && state.child === "p2");
+
+    // hand count
+    handP1.textContent = state.hands.p1.length;
+    handP2.textContent = state.hands.p2.length;
+
+    // score
+    scoreP1.textContent = state.won.p1;
+    scoreP2.textContent = state.won.p2;
+
+    // table card faces
+    // parent card always face up
+    if(state.parent === "p1"){
+      renderCardFace("p1", state.table.parentCard);
+      setCardFlip("p1", !!state.table.parentCard);
+      renderCardFace("p2", state.table.childCard);
+      setCardFlip("p2", state.table.childFaceDown ? false : !!state.table.childCard);
+    } else {
+      renderCardFace("p2", state.table.parentCard);
+      setCardFlip("p2", !!state.table.parentCard);
+      renderCardFace("p1", state.table.childCard);
+      setCardFlip("p1", state.table.childFaceDown ? false : !!state.table.childCard);
+    }
+  }
+
+  function setControlsEnabled(enabled){
+    btnHigh.disabled = !enabled;
+    btnLow.disabled  = !enabled;
+  }
+
+  function animDelay(ms){ return state.anim ? sleep(ms) : sleep(0); }
+
+  // -----------------------------
+  // Remaining counts (for CPU decisions)
+  // -----------------------------
+  function keyOf(card){ return `${card.v}-${card.s}`; }
+  function initRemainingFromHands(){
+    state.remaining = new Map();
+    const all = [...state.hands.p1, ...state.hands.p2];
+    for(const c of all){
+      const k = keyOf(c);
+      state.remaining.set(k, (state.remaining.get(k) || 0) + 1);
+    }
+  }
+  function removeFromRemaining(card){
+    const k = keyOf(card);
+    const cur = state.remaining.get(k) || 0;
+    if(cur <= 1) state.remaining.delete(k);
+    else state.remaining.set(k, cur - 1);
+  }
+  function remainingProbComparedTo(parentV){
+    // child card is uniformly random among remaining (unknown) cards
+    // compute P(>parentV) and P(<parentV)
+    let gt=0, lt=0, total=0;
+    for(const [k, cnt] of state.remaining.entries()){
+      const v = parseInt(k.split("-")[0], 10);
+      total += cnt;
+      if(v > parentV) gt += cnt;
+      else if(v < parentV) lt += cnt;
+    }
+    if(total === 0) return {gt:0, lt:0};
+    return {gt: gt/total, lt: lt/total};
+  }
+
+  // -----------------------------
+  // Game flow
+  // -----------------------------
+  function decideFirstParent(){
+    if(state.first === "p1") return "p1";
+    if(state.first === "p2") return "p2";
+    return (Math.random() < 0.5) ? "p1" : "p2";
+  }
+
+  function resetTable(){
+    state.table.parentCard = null;
+    state.table.childCard = null;
+    state.table.childFaceDown = true;
+    renderCardFace("p1", null);
+    renderCardFace("p2", null);
+    setCardFlip("p1", false);
+    setCardFlip("p2", false);
+  }
+
+  async function startGame(){
+    hideToast();
+    // close overlay
+    overlay.classList.remove("active");
+
+    // if online selected, require connection or allow local-only preview
+    if(state.mode === "online"){
+      // if not connected, we still allow start but it will ask to connect to play
+      state.net.enabled = true;
+    } else {
+      state.net.enabled = false;
+      teardownOnline();
+    }
+
+    // build and deal deck
+    const deck = shuffle(makeDeck());
+    state.hands.p1 = deck.slice(0, 26);
+    state.hands.p2 = deck.slice(26);
+    state.won.p1 = 0;
+    state.won.p2 = 0;
+    state.round = 1;
+    state.parent = decideFirstParent();
+    state.child = (state.parent === "p1") ? "p2" : "p1";
+
+    resetTable();
+    initRemainingFromHands();
+
+    showView("game");
+    updateHUD();
+
+    await beginRound();
+  }
+
+  function setHint(text){
+    hintText.textContent = text;
+  }
+
+  function isLocalHuman(player){
+    if(state.mode === "solo") return player === "p1";
+    if(state.mode === "local2p") return true; // both humans
+    if(state.mode === "online") return player === "p1"; // "you" as p1 locally; remote is p2
+    return true;
+  }
+
+  function childCanAct(){
+    // in solo: only if child is p1 (human)
+    // in local2p: always (because both humans use same device)
+    // in online: only if child is local p1; if child is remote, disable and wait
+    if(!state.inRound || state.resolved) return false;
+    if(state.mode === "local2p") return true;
+    if(state.mode === "solo") return state.child === "p1";
+    if(state.mode === "online") return (state.child === "p1") && state.net.connected;
+    return false;
+  }
+
+  function requireOnlineConnectedOrExplain(){
+    if(state.mode !== "online") return true;
+    if(state.net.connected) return true;
+    setToast("bad","⚠️", `<strong>オンラインβ</strong>は接続が必要です。メニューで「ホスト/参加」を使って接続してください。`);
+    return false;
+  }
+
+  async function beginRound(){
+    // if either hand empty -> end
+    if(state.hands.p1.length === 0 || state.hands.p2.length === 0){
+      return endGame();
+    }
+
+    state.inRound = true;
+    state.resolved = false;
+    hideToast();
+
+    // draw top cards: parent face up, child face down on table
+    const parentCard = state.hands[state.parent].shift();
+    const childCard  = state.hands[state.child].shift();
+
+    // remove parent from remaining immediately (revealed)
+    removeFromRemaining(parentCard);
+
+    state.table.parentCard = parentCard;
+    state.table.childCard = childCard;
+    state.table.childFaceDown = true;
+
+    // show parent face up, child back
+    updateHUD();
+
+    // guidance
+    if(state.mode === "online" && !requireOnlineConnectedOrExplain()){
+      setControlsEnabled(false);
+      setHint("オンライン接続待ち…（メニューで接続してから新規ゲーム）");
+      return;
+    }
+
+    if(state.mode === "solo"){
+      if(state.child === "p1"){
+        setHint("あなたが子：親より HIGH / LOW を選んでください。");
+      } else {
+        setHint("CPUが子：考え中…");
+      }
+    } else if(state.mode === "local2p"){
+      setHint(`${state.child === "p1" ? "プレイヤー1" : "プレイヤー2"} が子：HIGH / LOW を選んでください。`);
+    } else {
+      setHint(state.child === "p1" ? "あなたが子：HIGH / LOW を選んで送信します。" : "相手の選択待ち…");
+    }
+
+    setControlsEnabled(childCanAct());
+
+    // CPU turn if needed
+    if(state.mode === "solo" && state.child === "p2"){
+      await animDelay(450);
+      const guess = cpuChooseGuess();
+      await resolveRound(guess, "cpu");
+    }
+
+    // Online remote child: wait for message
+    if(state.mode === "online" && state.child === "p2"){
+      setControlsEnabled(false);
+    }
+  }
+
+  function cpuChooseGuess(){
+    const pv = state.table.parentCard.v;
+    // compute probabilities on remaining excluding parent already removed
+    const {gt, lt} = remainingProbComparedTo(pv);
+    // choose greater probability; if tie, random
+    if(Math.abs(gt - lt) < 1e-9) return (Math.random() < 0.5) ? "HIGH" : "LOW";
+    return (gt > lt) ? "HIGH" : "LOW";
+  }
+
+  async function resolveRound(guess, by){
+    if(!state.inRound || state.resolved) return;
+
+    // Online: if local made choice, send; if remote made choice, we already got it
+    if(state.mode === "online" && by === "local"){
+      if(!state.net.connected){
+        setToast("bad","⚠️","オンライン接続がありません。メニューで接続してください。");
+        return;
+      }
+      sendNet({t:"guess", guess});
+    }
+
+    state.resolved = true;
+    setControlsEnabled(false);
+
+    // reveal child
+    state.table.childFaceDown = false;
+    updateHUD();
+
+    // remove child from remaining (now revealed)
+    removeFromRemaining(state.table.childCard);
+
+    await animDelay(650);
+
+    const pv = state.table.parentCard.v;
+    const cv = state.table.childCard.v;
+
+    let result = "tie";
+    if(cv > pv) result = "HIGH";
+    else if(cv < pv) result = "LOW";
+
+    let childWins = false;
+    if(result !== "tie" && result === guess) childWins = true;
+
+    if(result === "tie"){
+      setToast("neutral","➖", `同じ数字！ <strong>捨て札</strong> になります。`);
+    } else if(childWins){
+      state.won[state.child] += 2;
+      setToast("ok","✅", `当たり！ 子（${labelOf(state.child)}）が <strong>2枚獲得</strong>。`);
+    } else {
+      setToast("bad","❌", `はずれ… <strong>捨て札</strong> になります。`);
+    }
+
+    updateHUD();
+
+    await animDelay(850);
+
+    // round clean up (animate-ish by flipping both down)
+    if(state.anim){
+      // flip down quickly for next round
+      setCardFlip("p1", false);
+      setCardFlip("p2", false);
+      await sleep(220);
+    }
+    resetTable();
+
+    // swap roles
+    const oldParent = state.parent;
+    state.parent = state.child;
+    state.child = oldParent;
+
+    state.round += 1;
+    state.inRound = false;
+
+    updateHUD();
+
+    // notify remote of round step only if online and local is "host" authoritative
+    if(state.mode === "online" && state.net.connected){
+      // keep both sides deterministic by sharing hands? We can't without revealing.
+      // Instead: host simulates full game and sends state updates.
+      // So in online mode: HOST is authoritative simulator; JOIN is a viewer/controller for their guess.
+      // If we are JOIN, do not auto-advance; we wait for host updates.
+      if(state.net.role === "host"){
+        sendNet({t:"state", snapshot: exportNetSnapshot()});
+      }
+    }
+
+    await animDelay(250);
+
+    if(state.mode === "online" && state.net.connected && state.net.role === "join"){
+      // join waits for host state updates to continue
+      return;
+    }
+
+    await beginRound();
+  }
+
+  function labelOf(p){
+    if(state.mode === "solo") return p === "p1" ? "あなた" : "CPU";
+    if(state.mode === "local2p") return p === "p1" ? "プレイヤー1" : "プレイヤー2";
+    return p === "p1" ? "あなた" : "相手";
+  }
+
+  function endGame(){
+    // decide winner
+    const a = state.won.p1;
+    const b = state.won.p2;
+    let title = "引き分け";
+    if(a > b) title = `${labelOf("p1")} の勝ち！`;
+    else if(b > a) title = `${labelOf("p2")} の勝ち！`;
+
+    endTitle.textContent = title;
+    endDesc.textContent = `全 ${a+b} 枚の獲得（捨て札を除く）。`;
+    endP1.textContent = a;
+    endP2.textContent = b;
+    overlay.classList.add("active");
+
+    setHint("ゲーム終了。");
+    setControlsEnabled(false);
+
+    if(state.mode === "online" && state.net.connected && state.net.role === "host"){
+      sendNet({t:"end", a, b, title});
+    }
+  }
+
+  // -----------------------------
+  // Controls
+  // -----------------------------
+  btnHigh.addEventListener("click", () => {
+    if(!childCanAct()) return;
+    resolveRound("HIGH", (state.mode === "online") ? "local" : "local");
+  });
+  btnLow.addEventListener("click", () => {
+    if(!childCanAct()) return;
+    resolveRound("LOW", (state.mode === "online") ? "local" : "local");
+  });
+
+  // -----------------------------
+  // Online beta (WebRTC, manual signaling)
+  // - Host is authoritative (simulates deck/hands).
+  // - Join sends guesses when it's their child turn; host sends snapshots.
+  // -----------------------------
+  function setOnlineStatus(text){
+    onlineStatus.textContent = text || "";
+  }
+
+  function teardownOnline(){
+    try{ state.net.dc && state.net.dc.close(); }catch{}
+    try{ state.net.pc && state.net.pc.close(); }catch{}
+    state.net.pc = null;
+    state.net.dc = null;
+    state.net.connected = false;
+    state.net.role = null;
+    setOnlineStatus("");
+  }
+
+  async function createPeer(role){
+    teardownOnline();
+    state.net.role = role;
+
+    const pc = new RTCPeerConnection({
+      iceServers: [
+        { urls: "stun:stun.l.google.com:19302" },
+        { urls: "stun:global.stun.twilio.com:3478?transport=udp" },
+      ]
+    });
+    state.net.pc = pc;
+
+    pc.onconnectionstatechange = () => {
+      setOnlineStatus(`接続状態: ${pc.connectionState}`);
+      if(pc.connectionState === "connected"){
+        state.net.connected = true;
+      }
+      if(["failed","disconnected","closed"].includes(pc.connectionState)){
+        state.net.connected = false;
+      }
+      updateHUD();
+      if(state.view === "game"){
+        setControlsEnabled(childCanAct());
+      }
+    };
+
+    pc.onicecandidate = () => {
+      // Wait for gathering to complete; we'll serialize via getLocalDescription() after a short delay.
+    };
+
+    if(role === "host"){
+      const dc = pc.createDataChannel("hl");
+      hookDataChannel(dc);
+      state.net.dc = dc;
+
+      const offer = await pc.createOffer();
+      await pc.setLocalDescription(offer);
+
+      // wait ICE gather (best-effort)
+      await sleep(900);
+      taSignal.value = JSON.stringify(pc.localDescription);
+      setOnlineStatus("Offer を生成しました。相手にコピーして送ってください。");
+
+    } else {
+      pc.ondatachannel = (ev) => {
+        state.net.dc = ev.channel;
+        hookDataChannel(state.net.dc);
+      };
+      setOnlineStatus("参加：相手の Offer を貼り付けて「貼付けを反映」を押してください。");
+    }
+  }
+
+  function hookDataChannel(dc){
+    dc.onopen = () => {
+      state.net.connected = true;
+      setOnlineStatus("データ通信OK（接続完了）");
+      // If join: request state
+      if(state.net.role === "join"){
+        sendNet({t:"hello"});
+      }
+      updateHUD();
+      if(state.view === "game"){
+        setControlsEnabled(childCanAct());
+      }
+    };
+    dc.onclose = () => {
+      state.net.connected = false;
+      setOnlineStatus("切断されました。");
+      updateHUD();
+    };
+    dc.onmessage = (ev) => {
+      try{
+        const msg = JSON.parse(ev.data);
+        onNetMessage(msg);
+      }catch{
+        // ignore
+      }
+    };
+  }
+
+  function sendNet(obj){
+    if(!state.net.dc || state.net.dc.readyState !== "open") return;
+    state.net.dc.send(JSON.stringify(obj));
+  }
+
+  function exportNetSnapshot(){
+    // Host shares enough to let join render without leaking unrevealed cards.
+    // We will NOT share hands. Join trusts host for displayed table cards + counters.
+    return {
+      round: state.round,
+      won: {...state.won},
+      handsCount: { p1: state.hands.p1.length, p2: state.hands.p2.length },
+      parent: state.parent,
+      child: state.child,
+      inRound: state.inRound,
+      resolved: state.resolved,
+      table: {
+        parentCard: state.table.parentCard,
+        // child card may be hidden if faceDown:
+        childCard: state.table.childFaceDown ? null : state.table.childCard,
+        childFaceDown: state.table.childFaceDown
+      }
+    };
+  }
+
+  function applyNetSnapshot(s){
+    state.round = s.round;
+    state.won = {...s.won};
+    // keep local "hands" arrays irrelevant; just show counts
+    state.hands.p1 = new Array(s.handsCount.p1).fill({v:0,s:"S"});
+    state.hands.p2 = new Array(s.handsCount.p2).fill({v:0,s:"S"});
+    state.parent = s.parent;
+    state.child = s.child;
+    state.inRound = s.inRound;
+    state.resolved = s.resolved;
+    state.table.parentCard = s.table.parentCard;
+    state.table.childFaceDown = s.table.childFaceDown;
+    // if host didn't send childCard (hidden), keep placeholder
+    state.table.childCard = s.table.childCard || (state.table.childFaceDown ? state.table.childCard : null);
+
+    // For join: if childFaceDown and host didn't send it, show back
+    updateHUD();
+
+    if(state.view === "game"){
+      if(state.inRound && !state.resolved){
+        if(state.child === "p2"){
+          setHint("あなたが子：HIGH / LOW を選んで送信します。");
+        }else{
+          setHint("相手の選択待ち…");
+        }
+        setControlsEnabled(state.net.connected && state.child === "p2"); // join is p2
+      }
+    }
+  }
+
+  async function onNetMessage(msg){
+    if(!msg || !msg.t) return;
+
+    if(msg.t === "hello" && state.net.role === "host"){
+      // send snapshot immediately
+      sendNet({t:"state", snapshot: exportNetSnapshot()});
+      return;
+    }
+
+    if(msg.t === "state" && state.net.role === "join"){
+      applyNetSnapshot(msg.snapshot);
+      return;
+    }
+
+    if(msg.t === "guess" && state.net.role === "host"){
+      // Remote (join) made guess. Only accept if it's their child turn.
+      if(state.mode !== "online") return;
+      if(!state.inRound || state.resolved) return;
+      if(state.child !== "p2") return;
+      await resolveRound(msg.guess, "remote");
+      return;
+    }
+
+    if(msg.t === "end" && state.net.role === "join"){
+      endTitle.textContent = msg.title || "結果";
+      endDesc.textContent = `全 ${msg.a+msg.b} 枚の獲得（捨て札を除く）。`;
+      endP1.textContent = msg.a;
+      endP2.textContent = msg.b;
+      overlay.classList.add("active");
+      setControlsEnabled(false);
+      setHint("ゲーム終了。");
+      return;
+    }
+  }
+
+  async function applySignalText(){
+    const text = taSignal.value.trim();
+    if(!text){ setOnlineStatus("テキスト欄が空です。"); return; }
+
+    let desc;
+    try{ desc = JSON.parse(text); }
+    catch{ setOnlineStatus("JSONとして読めません。Offer/Answer文字列をそのまま貼ってください。"); return; }
+
+    if(!state.net.pc){
+      setOnlineStatus("先に「ホスト」または「参加」を押してください。");
+      return;
+    }
+
+    const pc = state.net.pc;
+
+    if(desc.type === "offer" && state.net.role === "join"){
+      await pc.setRemoteDescription(desc);
+      const ans = await pc.createAnswer();
+      await pc.setLocalDescription(ans);
+      await sleep(900);
+      taSignal.value = JSON.stringify(pc.localDescription);
+      setOnlineStatus("Answer を生成しました。これをホストに送ってください。");
+      return;
+    }
+
+    if(desc.type === "answer" && state.net.role === "host"){
+      await pc.setRemoteDescription(desc);
+      setOnlineStatus("Answer を反映しました。接続確立を待っています…");
+      return;
+    }
+
+    setOnlineStatus("今の役割（ホスト/参加）と貼り付け内容（Offer/Answer）が合っていません。");
+  }
+
+  btnHost.addEventListener("click", async () => {
+    try{
+      await createPeer("host");
+    }catch(e){
+      setOnlineStatus("ホスト作成に失敗しました。HTTPS環境（GitHub Pages等）で試してください。");
+    }
+  });
+  btnJoin.addEventListener("click", async () => {
+    try{
+      await createPeer("join");
+    }catch(e){
+      setOnlineStatus("参加に失敗しました。HTTPS環境（GitHub Pages等）で試してください。");
+    }
+  });
+  btnOnlineReset.addEventListener("click", () => {
+    teardownOnline();
+    taSignal.value = "";
+    setOnlineStatus("リセットしました。");
+  });
+  btnCopy.addEventListener("click", async () => {
+    try{
+      await navigator.clipboard.writeText(taSignal.value);
+      setOnlineStatus("コピーしました。");
+    }catch{
+      setOnlineStatus("コピーできませんでした（ブラウザ権限の可能性）。手動でコピーしてください。");
+    }
+  });
+  btnPasteApply.addEventListener("click", async () => {
+    try{
+      await applySignalText();
+    }catch{
+      setOnlineStatus("反映に失敗しました。順番（Offer→Answer）を確認してください。");
+    }
+  });
+
+  // -----------------------------
+  // Online mode: swap local roles display
+  // - On join side, you are p2 (remote to host).
+  // - For simplicity, this file assumes one browser = host (p1), other browser = join (p2).
+  // -----------------------------
+  function adjustLabelsForOnline(){
+    if(state.mode !== "online") return;
+    // Host is "p1" local
+    // Join is "p2" local, but our UI code assumes local is p1.
+    // To keep it simple for a single file, we keep local as p1 always.
+    // Therefore: online join should also use this same file, but they will see themselves as "あなた" on p1 too.
+    // To avoid confusion, we instead set tags when join connects:
+    if(state.net.role === "join"){
+      tagP1.textContent = "相手";
+      tagP2.textContent = "あなた";
+    }else{
+      tagP1.textContent = "あなた";
+      tagP2.textContent = "相手";
+    }
+  }
+
+  // Call it in updateHUD hook for online
+  const _updateHUD = updateHUD;
+  updateHUD = function(){
+    _updateHUD();
+    if(state.mode === "online"){
+      adjustLabelsForOnline();
+      // For join: child action should be on p2, but our buttons are global; we gate in applyNetSnapshot.
+    }
+  };
+
+  // -----------------------------
+  // Initial UI
+  // -----------------------------
+  showView("menu");
+  setHint("メニューから開始してください。");
+})();
+</script>
+</body>
+</html>
