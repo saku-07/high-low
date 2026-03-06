@@ -3,29 +3,28 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>High & Low - 完全神完成版 v2</title>
-  <meta name="theme-color" content="#0b1220" />
+  <title>High & Low - 完全神完成版</title>
+  <meta name="theme-color" content="#0b1020" />
   <style>
     :root{
-      --bg:#060915;
-      --bg2:#0b1220;
-      --panel:rgba(12,19,36,.78);
+      --bg1:#050815;
+      --bg2:#0b1020;
+      --panel:rgba(13,19,39,.78);
       --panel2:rgba(255,255,255,.04);
-      --line:rgba(255,255,255,.10);
-      --text:#edf2ff;
+      --line:rgba(255,255,255,.11);
+      --text:#edf3ff;
       --muted:#9fb0d0;
-      --accent:#6ee7ff;
-      --accent2:#a78bfa;
-      --ok:#34d399;
-      --bad:#fb7185;
-      --warn:#fbbf24;
-      --radius:18px;
-      --shadow:0 18px 60px rgba(0,0,0,.42);
-      --pad:clamp(12px,2.4vw,18px);
-      --gap:clamp(10px,2vw,16px);
-      --cardW:clamp(96px,18vw,150px);
-      --cardH:calc(var(--cardW) * 1.38);
-      --btnH:46px;
+      --cyan:#67e8f9;
+      --violet:#a78bfa;
+      --green:#34d399;
+      --red:#fb7185;
+      --yellow:#fbbf24;
+      --shadow:0 18px 60px rgba(0,0,0,.45);
+      --radius:22px;
+      --gap:clamp(10px,2vw,18px);
+      --pad:clamp(12px,2.5vw,18px);
+      --cardW:clamp(98px,19vw,154px);
+      --cardH:calc(var(--cardW) * 1.4);
       --font:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Hiragino Kaku Gothic ProN","Yu Gothic UI","Meiryo",sans-serif;
     }
 
@@ -36,9 +35,10 @@
       font-family:var(--font);
       color:var(--text);
       background:
-        radial-gradient(1100px 700px at 10% -10%, rgba(110,231,255,.17), transparent 58%),
-        radial-gradient(900px 600px at 100% 0%, rgba(167,139,250,.18), transparent 55%),
-        linear-gradient(180deg,#050814,#050713 60%,#03040d);
+        radial-gradient(1000px 650px at 12% -10%, rgba(103,232,249,.17), transparent 60%),
+        radial-gradient(900px 600px at 100% 0%, rgba(167,139,250,.17), transparent 55%),
+        radial-gradient(900px 700px at 50% 120%, rgba(52,211,153,.08), transparent 60%),
+        linear-gradient(180deg,#040714,#050815 55%,#03040c);
       overflow-x:hidden;
     }
 
@@ -53,7 +53,7 @@
     }
 
     .shell{
-      width:min(1120px,100%);
+      width:min(1180px,100%);
       display:flex;
       flex-direction:column;
       gap:var(--gap);
@@ -69,59 +69,55 @@
 
     .brand{
       display:flex;
-      gap:12px;
       align-items:center;
+      gap:12px;
       min-width:0;
     }
 
     .logo{
-      width:48px;height:48px;border-radius:16px;
-      background:linear-gradient(135deg, rgba(110,231,255,.95), rgba(167,139,250,.95));
-      box-shadow:0 16px 40px rgba(110,231,255,.14);
+      width:54px;height:54px;border-radius:18px;
+      background:linear-gradient(135deg, rgba(103,232,249,.95), rgba(167,139,250,.95));
+      box-shadow:0 16px 45px rgba(103,232,249,.15);
       position:relative;
       overflow:hidden;
       flex:0 0 auto;
     }
-
-    .logo::after{
+    .logo::before{
       content:"";
-      position:absolute;
-      inset:-30%;
+      position:absolute; inset:-35%;
       background:
         radial-gradient(circle at 30% 30%, rgba(255,255,255,.9), transparent 28%),
-        radial-gradient(circle at 70% 70%, rgba(255,255,255,.35), transparent 34%);
-      animation:floatGlow 4s ease-in-out infinite;
+        radial-gradient(circle at 72% 70%, rgba(255,255,255,.32), transparent 36%);
+      animation:floaty 4s ease-in-out infinite;
     }
-
-    @keyframes floatGlow{
+    @keyframes floaty{
       0%,100%{transform:translateY(-4px)}
-      50%{transform:translateY(6px)}
+      50%{transform:translateY(8px)}
     }
 
     h1{
       margin:0;
-      font-size:clamp(20px,2.7vw,30px);
-      line-height:1.1;
+      font-size:clamp(22px,2.7vw,32px);
+      line-height:1.05;
+      letter-spacing:.2px;
     }
 
     .subtitle{
+      margin-top:4px;
       color:var(--muted);
       font-size:12px;
-      margin-top:4px;
     }
 
-    .topStatus{
+    .headRight{
       display:flex;
       gap:10px;
       flex-wrap:wrap;
       justify-content:flex-end;
-      align-items:center;
     }
 
     .chip{
       display:inline-flex;
       align-items:center;
-      gap:8px;
       min-height:34px;
       padding:6px 12px;
       border-radius:999px;
@@ -129,27 +125,25 @@
       background:rgba(255,255,255,.04);
       color:var(--muted);
       font-size:12px;
-      font-weight:800;
+      font-weight:900;
     }
-
     .chip.good{
       border-color:rgba(52,211,153,.28);
-      color:#c9ffe8;
       background:rgba(52,211,153,.08);
+      color:#cffff0;
     }
-
     .chip.warn{
       border-color:rgba(251,191,36,.28);
-      color:#ffeab0;
       background:rgba(251,191,36,.08);
+      color:#ffe8a3;
     }
 
     main{
+      min-height:760px;
       background:rgba(255,255,255,.04);
       border:1px solid var(--line);
-      border-radius:22px;
+      border-radius:26px;
       box-shadow:var(--shadow);
-      min-height:700px;
       overflow:hidden;
       position:relative;
     }
@@ -159,36 +153,36 @@
 
     .menuGrid{
       display:grid;
-      grid-template-columns:1.08fr .92fr;
+      grid-template-columns:1.05fr .95fr;
       gap:var(--gap);
     }
-
-    @media (max-width: 940px){
+    @media (max-width:950px){
       .menuGrid{grid-template-columns:1fr}
+      main{min-height:920px}
     }
 
     .panel{
       background:var(--panel);
       border:1px solid var(--line);
       border-radius:var(--radius);
-      padding:16px;
-      box-shadow:0 0 0 1px rgba(0,0,0,.12) inset;
+      padding:18px;
+      box-shadow:0 0 0 1px rgba(0,0,0,.15) inset;
     }
 
-    .panelTitle{
+    .title{
       margin:0 0 8px;
-      font-size:18px;
-      font-weight:900;
+      font-size:20px;
+      font-weight:1000;
       letter-spacing:.2px;
     }
 
     .small{
       color:var(--muted);
       font-size:13px;
-      line-height:1.6;
+      line-height:1.65;
     }
 
-    .modeCards{
+    .heroCards{
       display:grid;
       gap:12px;
       margin-top:14px;
@@ -196,40 +190,37 @@
 
     .modeCard{
       display:flex;
-      gap:12px;
+      gap:14px;
       align-items:flex-start;
-      padding:14px;
-      border-radius:16px;
+      padding:15px;
+      border-radius:18px;
       border:1px solid var(--line);
       background:rgba(255,255,255,.03);
       cursor:pointer;
-      transition:transform .15s ease, background .15s ease, border-color .15s ease;
+      transition:transform .14s ease, background .18s ease, border-color .18s ease;
+      user-select:none;
     }
-
     .modeCard:hover{
       transform:translateY(-1px);
       background:rgba(255,255,255,.05);
     }
-
     .modeCard.selected{
-      border-color:rgba(110,231,255,.34);
-      background:linear-gradient(135deg, rgba(110,231,255,.08), rgba(167,139,250,.07));
-      box-shadow:0 0 0 1px rgba(110,231,255,.15) inset;
+      border-color:rgba(103,232,249,.34);
+      background:linear-gradient(135deg, rgba(103,232,249,.08), rgba(167,139,250,.08));
+      box-shadow:0 0 0 1px rgba(103,232,249,.16) inset;
     }
-
     .modeIcon{
-      width:44px;height:44px;border-radius:14px;
+      width:48px;height:48px;border-radius:16px;
       display:grid;place-items:center;
       background:rgba(255,255,255,.06);
+      font-size:22px;
       flex:0 0 auto;
-      font-size:20px;
     }
-
     .modeTitle{
-      font-weight:900;
       margin:2px 0 4px;
+      font-weight:1000;
+      font-size:16px;
     }
-
     .modeDesc{
       margin:0;
       color:var(--muted);
@@ -260,63 +251,58 @@
       color:var(--muted);
       font-size:12px;
       font-weight:900;
+      letter-spacing:.2px;
     }
 
-    input,select,textarea{
+    input, select{
       width:100%;
+      height:44px;
       border-radius:14px;
       border:1px solid rgba(255,255,255,.12);
       background:#fff;
       color:#0b1220;
-      padding:0 12px;
-      height:42px;
-      outline:none;
       font-size:14px;
-      font-weight:800;
+      font-weight:900;
+      padding:0 12px;
+      outline:none;
     }
-
-    textarea{
-      min-height:88px;
-      padding:10px 12px;
-      resize:vertical;
-      font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    select option{
+      color:#0b1220;
+      background:#fff;
     }
 
     button{
       appearance:none;
       border:none;
-      min-width:120px;
-      height:var(--btnH);
-      padding:0 14px;
+      min-width:124px;
+      height:46px;
       border-radius:14px;
+      padding:0 14px;
       color:var(--text);
       background:rgba(255,255,255,.07);
       box-shadow:0 0 0 1px rgba(255,255,255,.08) inset;
-      font-weight:900;
+      font-size:14px;
+      font-weight:1000;
       letter-spacing:.2px;
       cursor:pointer;
       transition:transform .12s ease, background .16s ease, opacity .16s ease;
     }
-
     button:hover{background:rgba(255,255,255,.10)}
     button:active{transform:translateY(1px) scale(.99)}
-    button:disabled{opacity:.48;cursor:not-allowed}
+    button:disabled{opacity:.45;cursor:not-allowed}
 
     .primary{
-      background:linear-gradient(135deg, rgba(110,231,255,.20), rgba(167,139,250,.20));
-      box-shadow:0 0 0 1px rgba(110,231,255,.18) inset;
+      background:linear-gradient(135deg, rgba(103,232,249,.20), rgba(167,139,250,.20));
+      box-shadow:0 0 0 1px rgba(103,232,249,.18) inset;
     }
-
     .success{
       background:rgba(52,211,153,.13);
       box-shadow:0 0 0 1px rgba(52,211,153,.24) inset;
     }
-
     .danger{
       background:rgba(251,113,133,.13);
       box-shadow:0 0 0 1px rgba(251,113,133,.24) inset;
     }
-
     .ghost{
       background:transparent;
       box-shadow:0 0 0 1px rgba(255,255,255,.14) inset;
@@ -325,7 +311,7 @@
     .statusBox{
       margin-top:12px;
       padding:12px 14px;
-      border-radius:14px;
+      border-radius:16px;
       border:1px solid var(--line);
       background:rgba(255,255,255,.03);
       color:var(--muted);
@@ -333,23 +319,20 @@
       line-height:1.6;
       white-space:pre-wrap;
     }
-
     .statusBox.good{
       border-color:rgba(52,211,153,.24);
       background:rgba(52,211,153,.07);
-      color:#cfffec;
+      color:#d5ffef;
     }
-
     .statusBox.bad{
       border-color:rgba(251,113,133,.24);
       background:rgba(251,113,133,.07);
-      color:#ffd4dc;
+      color:#ffd8df;
     }
-
     .statusBox.warn{
       border-color:rgba(251,191,36,.24);
       background:rgba(251,191,36,.07);
-      color:#ffeab3;
+      color:#ffe8aa;
     }
 
     .ruleList{
@@ -360,26 +343,23 @@
       line-height:1.65;
     }
 
+    .profileBox{margin-top:12px}
+
     .leaderboard{
       margin-top:14px;
       display:grid;
       gap:8px;
     }
-
     .lbRow{
       display:grid;
-      grid-template-columns:40px 1fr 90px 70px;
+      grid-template-columns:42px 1fr 96px 74px;
       gap:10px;
       align-items:center;
-      padding:11px 12px;
-      border-radius:14px;
+      padding:12px;
+      border-radius:16px;
       border:1px solid var(--line);
       background:rgba(255,255,255,.03);
       font-size:13px;
-    }
-
-    .profileBox{
-      margin-top:12px;
     }
 
     .gameTop{
@@ -388,12 +368,11 @@
       gap:var(--gap);
       align-items:start;
     }
-
-    @media (max-width: 900px){
+    @media (max-width:900px){
       .gameTop{grid-template-columns:1fr}
     }
 
-    .scoreWrap{
+    .scoreGrid{
       display:flex;
       gap:10px;
       flex-wrap:wrap;
@@ -401,24 +380,22 @@
 
     .scoreCard{
       min-width:170px;
-      background:rgba(255,255,255,.03);
-      border:1px solid var(--line);
-      border-radius:16px;
       padding:12px;
+      border-radius:18px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.03);
     }
-
     .scoreLabel{
       display:flex;
       justify-content:space-between;
       gap:10px;
-      color:var(--muted);
       font-size:12px;
-      font-weight:800;
+      color:var(--muted);
+      font-weight:900;
     }
-
     .scoreValue{
       margin-top:6px;
-      font-size:24px;
+      font-size:26px;
       font-weight:1000;
       letter-spacing:.3px;
     }
@@ -433,7 +410,7 @@
       background:rgba(255,255,255,.04);
       color:var(--muted);
       font-size:11px;
-      font-weight:900;
+      font-weight:1000;
       white-space:nowrap;
     }
 
@@ -444,18 +421,17 @@
       justify-content:flex-end;
     }
 
-    .roundInfo{
+    .roundBox{
       margin-top:var(--gap);
-      background:rgba(12,19,36,.68);
+      padding:14px;
+      border-radius:18px;
       border:1px solid var(--line);
-      border-radius:16px;
-      padding:12px 14px;
+      background:rgba(13,19,39,.64);
     }
-
-    .roundInfo strong{
+    .roundBox strong{
       display:block;
       margin-bottom:4px;
-      font-size:15px;
+      font-size:16px;
     }
 
     .arena{
@@ -464,27 +440,24 @@
       grid-template-columns:1fr 1fr;
       gap:var(--gap);
     }
-
-    @media (max-width: 760px){
+    @media (max-width:760px){
       .arena{grid-template-columns:1fr}
     }
 
     .slot{
       min-height:calc(var(--cardH) + 120px);
-      background:rgba(255,255,255,.03);
+      padding:15px;
+      border-radius:22px;
       border:1px solid var(--line);
-      border-radius:18px;
-      padding:14px;
+      background:rgba(255,255,255,.03);
       position:relative;
       overflow:hidden;
     }
-
     .slot::before{
       content:"";
-      position:absolute;
-      inset:-30%;
+      position:absolute; inset:-30%;
       background:
-        radial-gradient(circle at 30% 30%, rgba(110,231,255,.08), transparent 52%),
+        radial-gradient(circle at 30% 30%, rgba(103,232,249,.08), transparent 52%),
         radial-gradient(circle at 70% 70%, rgba(167,139,250,.08), transparent 52%);
       pointer-events:none;
     }
@@ -497,7 +470,7 @@
       align-items:center;
       gap:10px;
       flex-wrap:wrap;
-      margin-bottom:10px;
+      margin-bottom:12px;
     }
 
     .slotName{
@@ -509,31 +482,30 @@
     }
 
     .handInfo{
-      color:var(--muted);
       font-size:12px;
+      color:var(--muted);
+      font-weight:900;
       display:flex;
-      gap:8px;
       align-items:center;
-      font-weight:800;
+      gap:8px;
     }
 
     .dot{
       width:8px;height:8px;border-radius:50%;
       background:rgba(255,255,255,.16);
     }
-
     .dot.active{
       background:rgba(52,211,153,.95);
-      box-shadow:0 0 20px rgba(52,211,153,.25);
+      box-shadow:0 0 20px rgba(52,211,153,.26);
     }
 
     .cardStage{
       position:relative;
       z-index:1;
-      min-height:var(--cardH);
       display:flex;
-      align-items:center;
       justify-content:center;
+      align-items:center;
+      min-height:var(--cardH);
     }
 
     .cardWrap{
@@ -547,41 +519,37 @@
       height:100%;
       position:relative;
       transform-style:preserve-3d;
-      transition:transform .7s cubic-bezier(.2,.8,.2,1);
+      transition:transform .72s cubic-bezier(.2,.8,.2,1);
     }
-
-    .card.faceUp{transform:rotateY(0)}
+    .card.faceUp{transform:rotateY(0deg)}
     .card.faceDown{transform:rotateY(180deg)}
 
     .cardSide{
-      position:absolute;
-      inset:0;
-      border-radius:18px;
-      overflow:hidden;
+      position:absolute; inset:0;
+      border-radius:20px;
       backface-visibility:hidden;
+      overflow:hidden;
       box-shadow:0 18px 45px rgba(0,0,0,.35);
     }
 
     .front{
       background:#fff;
       color:#0b1220;
-      border:1px solid rgba(0,0,0,.12);
+      border:1px solid rgba(0,0,0,.14);
     }
 
     .back{
       transform:rotateY(180deg);
       background:
-        radial-gradient(circle at 25% 20%, rgba(255,255,255,.25), transparent 40%),
-        radial-gradient(circle at 80% 70%, rgba(255,255,255,.2), transparent 45%),
-        linear-gradient(135deg, rgba(110,231,255,.62), rgba(167,139,250,.62));
+        radial-gradient(circle at 25% 20%, rgba(255,255,255,.24), transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(255,255,255,.20), transparent 45%),
+        linear-gradient(135deg, rgba(103,232,249,.62), rgba(167,139,250,.62));
       border:1px solid rgba(255,255,255,.24);
     }
-
     .back::after{
       content:"";
-      position:absolute;
-      inset:10px;
-      border-radius:14px;
+      position:absolute; inset:10px;
+      border-radius:15px;
       border:1px dashed rgba(255,255,255,.38);
     }
 
@@ -608,19 +576,19 @@
       flex:1;
       display:grid;
       place-items:center;
-      font-size:44px;
+      font-size:46px;
     }
 
     .bottomRot{transform:rotate(180deg)}
-    .red{color:#d11a2a}
+    .red{color:#cf1f2c}
     .black{color:#0b1220}
 
     .controls{
       margin-top:var(--gap);
-      background:rgba(12,19,36,.68);
+      padding:15px;
+      border-radius:20px;
       border:1px solid var(--line);
-      border-radius:18px;
-      padding:14px;
+      background:rgba(13,19,39,.64);
       display:grid;
       gap:10px;
     }
@@ -628,16 +596,15 @@
     .hlBtns{
       display:flex;
       gap:10px;
-      flex-wrap:wrap;
       justify-content:center;
+      flex-wrap:wrap;
     }
 
-    .highBtn{
-      background:rgba(110,231,255,.14);
-      box-shadow:0 0 0 1px rgba(110,231,255,.22) inset;
+    .btnHigh{
+      background:rgba(103,232,249,.14);
+      box-shadow:0 0 0 1px rgba(103,232,249,.22) inset;
     }
-
-    .lowBtn{
+    .btnLow{
       background:rgba(167,139,250,.14);
       box-shadow:0 0 0 1px rgba(167,139,250,.22) inset;
     }
@@ -647,63 +614,60 @@
       color:var(--muted);
       font-size:13px;
       line-height:1.6;
-      font-weight:700;
+      font-weight:800;
     }
 
     .toast{
+      display:none;
       margin-top:var(--gap);
-      padding:12px 14px;
+      padding:13px 14px;
       border-radius:16px;
       border:1px solid var(--line);
       background:rgba(255,255,255,.03);
       color:var(--muted);
-      display:none;
-      line-height:1.6;
       font-size:13px;
+      line-height:1.6;
     }
-
     .toast.show{display:block}
     .toast.good{
       border-color:rgba(52,211,153,.24);
       background:rgba(52,211,153,.07);
-      color:#cfffec;
+      color:#d6fff0;
     }
     .toast.bad{
       border-color:rgba(251,113,133,.24);
       background:rgba(251,113,133,.07);
-      color:#ffd4dc;
+      color:#ffd6dd;
     }
     .toast.warn{
       border-color:rgba(251,191,36,.24);
       background:rgba(251,191,36,.07);
-      color:#ffeab3;
+      color:#ffe8aa;
     }
 
     .overlay{
-      position:fixed;
-      inset:0;
-      background:rgba(0,0,0,.58);
+      position:fixed; inset:0;
       display:none;
       align-items:center;
       justify-content:center;
+      background:rgba(0,0,0,.58);
       padding:16px;
       z-index:50;
     }
-
     .overlay.active{display:flex}
 
     .modal{
       width:min(560px,100%);
-      background:rgba(12,19,36,.96);
+      padding:20px;
+      border-radius:24px;
       border:1px solid var(--line);
-      border-radius:22px;
-      padding:18px;
+      background:rgba(12,19,36,.96);
       box-shadow:0 24px 90px rgba(0,0,0,.55);
     }
 
     .modal h2{
       margin:0 0 10px;
-      font-size:24px;
+      font-size:26px;
     }
 
     .modal p{
@@ -718,24 +682,21 @@
       gap:10px;
       margin-top:12px;
     }
-
     @media (max-width:520px){
       .modalGrid{grid-template-columns:1fr}
     }
 
     .modalStat{
-      border:1px solid var(--line);
-      border-radius:16px;
       padding:12px;
+      border-radius:16px;
+      border:1px solid var(--line);
       background:rgba(255,255,255,.03);
     }
-
     .modalStat .k{
       color:var(--muted);
       font-size:12px;
-      font-weight:800;
+      font-weight:900;
     }
-
     .modalStat .v{
       margin-top:6px;
       font-size:22px;
@@ -750,7 +711,7 @@
     }
 
     @media (prefers-reduced-motion: reduce){
-      *{animation:none!important;transition:none!important}
+      *{animation:none !important; transition:none !important}
     }
   </style>
 </head>
@@ -762,10 +723,10 @@
         <div class="logo"></div>
         <div>
           <h1>High &amp; Low</h1>
-          <div class="subtitle">完全神完成版 v2 / 1人用・ローカル2人・Firebaseオンライン・レートランキング</div>
+          <div class="subtitle">完全神完成版 / Firebaseオンライン / 合言葉ルーム / レートランキング</div>
         </div>
       </div>
-      <div class="topStatus">
+      <div class="headRight">
         <div id="authChip" class="chip warn">Firebase接続中…</div>
         <div id="modeChip" class="chip">メニュー</div>
       </div>
@@ -775,18 +736,18 @@
       <section id="viewMenu" class="view active">
         <div class="menuGrid">
           <div class="panel">
-            <h2 class="panelTitle">モード選択</h2>
+            <h2 class="title">モード選択</h2>
             <div class="small">
-              オンラインは Firebase の合言葉ルームです。<br>
-              ホストが部屋作成 → 相手が同じ合言葉で参加 → ホストが開始、で遊べます。
+              1人用、ローカル2人、Firebaseオンライン対戦に対応。<br>
+              オンラインは「ホストが部屋作成 → 相手が同じ合言葉で参加 → ホストが開始」です。
             </div>
 
-            <div class="modeCards">
+            <div class="heroCards">
               <div class="modeCard selected" data-mode="solo">
                 <div class="modeIcon">🤖</div>
                 <div>
                   <div class="modeTitle">1人用（CPU戦）</div>
-                  <p class="modeDesc">あなたとCPUが交互に親子を担当。子のときに High / Low を予想します。</p>
+                  <p class="modeDesc">CPUと対戦。子のときに親より大きいか小さいかを予想します。</p>
                 </div>
               </div>
 
@@ -794,7 +755,7 @@
                 <div class="modeIcon">👥</div>
                 <div>
                   <div class="modeTitle">ローカル2人対戦</div>
-                  <p class="modeDesc">同じ端末で交代プレイ。PCでもスマホでも遊べます。</p>
+                  <p class="modeDesc">同じ端末で交代プレイ。スマホでもPCでも遊びやすいレイアウトです。</p>
                 </div>
               </div>
 
@@ -802,7 +763,7 @@
                 <div class="modeIcon">🌐</div>
                 <div>
                   <div class="modeTitle">オンライン対戦（Firebase）</div>
-                  <p class="modeDesc">合言葉で部屋接続。勝敗でレート更新、ランキングに反映します。</p>
+                  <p class="modeDesc">合言葉でマッチ。勝敗でレート更新、ランキング反映。</p>
                 </div>
               </div>
             </div>
@@ -810,7 +771,7 @@
             <div class="fields">
               <div class="field">
                 <label>表示名</label>
-                <input id="nameInput" maxlength="16" placeholder="例：はると" />
+                <input id="nameInput" maxlength="16" placeholder="例：はると">
               </div>
 
               <div class="row">
@@ -834,11 +795,11 @@
             </div>
 
             <div id="onlinePanel" class="panel" style="margin-top:14px; display:none;">
-              <h3 class="panelTitle" style="margin-bottom:8px;">オンライン対戦</h3>
+              <h3 class="title" style="font-size:18px;">オンライン対戦</h3>
 
               <div class="field">
                 <label>合言葉（4〜12文字 / 英数字）</label>
-                <input id="roomCodeInput" maxlength="12" placeholder="例：SAKURA01" />
+                <input id="roomCodeInput" maxlength="12" placeholder="例：SAKURA01">
               </div>
 
               <div class="row" style="margin-top:12px;">
@@ -851,24 +812,23 @@
               <div id="onlineStatus" class="statusBox">未接続</div>
 
               <ul class="ruleList">
-                <li>ホスト: 合言葉を入れて「部屋作成」</li>
-                <li>相手: 同じ合言葉で「参加」</li>
+                <li>ホストは合言葉を入力して「部屋作成」</li>
+                <li>相手は同じ合言葉を入力して「参加」</li>
                 <li>2人揃ったらホストが「オンライン開始」</li>
               </ul>
             </div>
 
             <div class="row" style="margin-top:16px;">
-              <button id="startLocalBtn" class="primary">このモードで開始</button>
+              <button id="startBtn" class="primary">開始する</button>
               <button id="refreshLbBtn" class="ghost">ランキング更新</button>
             </div>
           </div>
 
           <div class="panel">
-            <h2 class="panelTitle">プロフィール / ランキング</h2>
-            <div class="small">オンライン勝敗でレートを更新します。初期レートは 1000 です。</div>
+            <h2 class="title">プロフィール / ランキング</h2>
+            <div class="small">オンライン対戦の勝敗でレートを更新します。初期レートは 1000 です。</div>
 
             <div id="myProfileBox" class="statusBox profileBox">プロフィール読込中…</div>
-
             <div id="leaderboard" class="leaderboard"></div>
           </div>
         </div>
@@ -877,10 +837,10 @@
       <section id="viewGame" class="view">
         <div class="gameTop">
           <div>
-            <div class="scoreWrap">
+            <div class="scoreGrid">
               <div class="scoreCard">
                 <div class="scoreLabel">
-                  <span id="p1Label">プレイヤー1</span>
+                  <span>プレイヤー1</span>
                   <span id="p1Badge" class="badge">あなた</span>
                 </div>
                 <div id="scoreP1" class="scoreValue">0</div>
@@ -888,7 +848,7 @@
 
               <div class="scoreCard">
                 <div class="scoreLabel">
-                  <span id="p2Label">プレイヤー2</span>
+                  <span>プレイヤー2</span>
                   <span id="p2Badge" class="badge">CPU</span>
                 </div>
                 <div id="scoreP2" class="scoreValue">0</div>
@@ -903,9 +863,9 @@
               </div>
             </div>
 
-            <div class="roundInfo">
+            <div class="roundBox">
               <strong id="roundTitle">準備完了</strong>
-              <div class="small" id="roundDesc">子の人が High / Low を選びます。</div>
+              <div id="roundDesc" class="small">子の人が High / Low を選びます。</div>
             </div>
           </div>
 
@@ -922,7 +882,10 @@
                 <span id="nameP1">プレイヤー1</span>
                 <span id="roleP1" class="badge">—</span>
               </div>
-              <div class="handInfo"><span id="dotP1" class="dot"></span>手札 <b id="handP1">26</b></div>
+              <div class="handInfo">
+                <span id="dotP1" class="dot"></span>
+                手札 <b id="handP1">26</b>
+              </div>
             </div>
             <div class="cardStage">
               <div class="cardWrap">
@@ -946,7 +909,10 @@
                 <span id="nameP2">プレイヤー2</span>
                 <span id="roleP2" class="badge">—</span>
               </div>
-              <div class="handInfo"><span id="dotP2" class="dot"></span>手札 <b id="handP2">26</b></div>
+              <div class="handInfo">
+                <span id="dotP2" class="dot"></span>
+                手札 <b id="handP2">26</b>
+              </div>
             </div>
             <div class="cardStage">
               <div class="cardWrap">
@@ -967,8 +933,8 @@
 
         <div class="controls">
           <div class="hlBtns">
-            <button id="highBtn" class="highBtn" disabled>HIGH（大きい）</button>
-            <button id="lowBtn" class="lowBtn" disabled>LOW（小さい）</button>
+            <button id="highBtn" class="btnHigh" disabled>HIGH（大きい）</button>
+            <button id="lowBtn" class="btnLow" disabled>LOW（小さい）</button>
           </div>
           <div id="hintText" class="hint">準備中…</div>
         </div>
@@ -977,7 +943,7 @@
       </section>
     </main>
 
-    <div class="foot">GitHub Pages + Firebase Firestore + Anonymous Auth</div>
+    <div class="foot">GitHub Pages + Firebase Authentication + Cloud Firestore</div>
   </div>
 </div>
 
@@ -1008,14 +974,15 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
   import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
   import {
-    getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc,
+    getFirestore,
+    doc, getDoc, setDoc, updateDoc, deleteDoc,
     collection, query, orderBy, limit, getDocs,
-    onSnapshot, serverTimestamp, arrayUnion, runTransaction
+    onSnapshot, serverTimestamp, runTransaction, arrayUnion
   } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
-  // =========================================================
-  // ここを自分の Firebase の値に置き換える
-  // =========================================================
+  // =========================
+  // ここだけ自分の値に置き換え
+  // =========================
   const firebaseConfig = {
     apiKey: "ここにapiKey",
     authDomain: "ここにauthDomain",
@@ -1029,9 +996,9 @@
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  // ---------------------------------------------------------
+  // -------------------------
   // DOM
-  // ---------------------------------------------------------
+  // -------------------------
   const $ = (id) => document.getElementById(id);
 
   const authChip = $("authChip");
@@ -1047,28 +1014,23 @@
 
   const onlinePanel = $("onlinePanel");
   const onlineStatus = $("onlineStatus");
+
   const createRoomBtn = $("createRoomBtn");
   const joinRoomBtn = $("joinRoomBtn");
   const leaveRoomBtn = $("leaveRoomBtn");
   const startOnlineBtn = $("startOnlineBtn");
-
-  const startLocalBtn = $("startLocalBtn");
+  const startBtn = $("startBtn");
   const refreshLbBtn = $("refreshLbBtn");
 
-  const leaderboard = $("leaderboard");
   const myProfileBox = $("myProfileBox");
+  const leaderboard = $("leaderboard");
 
-  const menuBtn = $("menuBtn");
-  const newBtn = $("newBtn");
-
-  const p1Label = $("p1Label");
-  const p2Label = $("p2Label");
   const p1Badge = $("p1Badge");
   const p2Badge = $("p2Badge");
+  const gameModeBadge = $("gameModeBadge");
   const scoreP1 = $("scoreP1");
   const scoreP2 = $("scoreP2");
   const roundNum = $("roundNum");
-  const gameModeBadge = $("gameModeBadge");
   const roundTitle = $("roundTitle");
   const roundDesc = $("roundDesc");
   const hintText = $("hintText");
@@ -1084,9 +1046,13 @@
 
   const cardP1 = $("cardP1");
   const cardP2 = $("cardP2");
+
   const highBtn = $("highBtn");
   const lowBtn = $("lowBtn");
   const toast = $("toast");
+
+  const menuBtn = $("menuBtn");
+  const newBtn = $("newBtn");
 
   const resultOverlay = $("resultOverlay");
   const resultTitle = $("resultTitle");
@@ -1113,72 +1079,51 @@
     }
   };
 
-  // ---------------------------------------------------------
+  // -------------------------
   // State
-  // ---------------------------------------------------------
+  // -------------------------
   const state = {
     mode: "solo",
     first: "random",
     anim: true,
-
     uid: null,
-    user: null,
     profile: null,
 
     game: null,
 
-    roomCode: "",
     roomRef: null,
-    roomUnsub: null,
+    roomCode: "",
     roomData: null,
+    roomUnsub: null,
     isHost: false,
     appliedRating: false,
-
-    netBusy: false
+    onlineBusy: false
   };
 
-  // ---------------------------------------------------------
-  // Helpers
-  // ---------------------------------------------------------
   const SUITS = [
-    { key: "S", icon: "♠", color: "black" },
-    { key: "H", icon: "♥", color: "red" },
-    { key: "D", icon: "♦", color: "red" },
-    { key: "C", icon: "♣", color: "black" }
+    { key:"S", icon:"♠", color:"black" },
+    { key:"H", icon:"♥", color:"red" },
+    { key:"D", icon:"♦", color:"red" },
+    { key:"C", icon:"♣", color:"black" }
   ];
 
-  function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
-  function animWait(ms){ return state.anim ? sleep(ms) : sleep(0); }
-
-  function sanitizeRoomCode(v){
-    return String(v || "").toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 12);
-  }
-
-  function currentName(){
-    return (nameInput.value || "").trim().slice(0, 16) || localStorage.getItem("hl_name") || "ゲスト";
-  }
+  const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+  const animWait = (ms) => state.anim ? sleep(ms) : sleep(0);
 
   function saveName(){
-    localStorage.setItem("hl_name", currentName());
+    localStorage.setItem("hl_name", (nameInput.value || "").trim().slice(0,16));
+  }
+
+  function getName(){
+    return (nameInput.value || "").trim().slice(0,16) || localStorage.getItem("hl_name") || "ゲスト";
+  }
+
+  function sanitizeRoomCode(v){
+    return String(v || "").toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0,12);
   }
 
   function setModeChip(text){
     modeChip.textContent = text;
-  }
-
-  function setStatus(el, text, kind=""){
-    el.textContent = text;
-    el.className = "statusBox" + (kind ? " " + kind : "");
-  }
-
-  function showToast(text, kind=""){
-    toast.textContent = text;
-    toast.className = "toast show" + (kind ? " " + kind : "");
-  }
-
-  function hideToast(){
-    toast.className = "toast";
-    toast.textContent = "";
   }
 
   function showMenu(){
@@ -1189,12 +1134,25 @@
   }
 
   function showGame(){
-    viewGame.classList.add("active");
     viewMenu.classList.remove("active");
+    viewGame.classList.add("active");
     resultOverlay.classList.remove("active");
-    if(state.mode === "solo") setModeChip("1人用");
-    else if(state.mode === "local2p") setModeChip("ローカル2人");
-    else setModeChip("オンライン");
+    setModeChip(state.mode === "solo" ? "1人用" : state.mode === "local2p" ? "ローカル2人" : "オンライン");
+  }
+
+  function setStatus(text, kind=""){
+    onlineStatus.textContent = text;
+    onlineStatus.className = "statusBox" + (kind ? " " + kind : "");
+  }
+
+  function showToast(text, kind=""){
+    toast.textContent = text;
+    toast.className = "toast show" + (kind ? " " + kind : "");
+  }
+
+  function hideToast(){
+    toast.textContent = "";
+    toast.className = "toast";
   }
 
   function rankText(v){
@@ -1209,27 +1167,27 @@
     return SUITS.find(s => s.key === key);
   }
 
-  function clone(obj){
-    return JSON.parse(JSON.stringify(obj));
-  }
-
   function shuffle(arr){
     const a = [...arr];
-    for(let i = a.length - 1; i > 0; i--){
-      const j = Math.floor(Math.random() * (i + 1));
+    for(let i=a.length-1;i>0;i--){
+      const j = Math.floor(Math.random() * (i+1));
       [a[i], a[j]] = [a[j], a[i]];
     }
     return a;
   }
 
   function createDeck(){
-    const d = [];
+    const deck = [];
     for(const s of SUITS){
-      for(let v = 2; v <= 14; v++){
-        d.push({ v, s: s.key });
+      for(let v=2; v<=14; v++){
+        deck.push({ v, s:s.key });
       }
     }
-    return shuffle(d);
+    return shuffle(deck);
+  }
+
+  function clone(obj){
+    return JSON.parse(JSON.stringify(obj));
   }
 
   function setCardFace(player, card){
@@ -1256,16 +1214,33 @@
     });
   }
 
-  function flipCard(player, up){
+  function flip(player, up){
     const el = player === "p1" ? cardP1 : cardP2;
     el.classList.toggle("faceUp", !!up);
     el.classList.toggle("faceDown", !up);
   }
 
+  function defaultProfile(name){
+    return {
+      name: name || "ゲスト",
+      rating: 1000,
+      wins: 0,
+      losses: 0,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
+    };
+  }
+
+  function calcElo(myRating, oppRating, result){
+    const K = 24;
+    const expected = 1 / (1 + Math.pow(10, (oppRating - myRating) / 400));
+    return myRating + Math.round(K * (result - expected));
+  }
+
   function buildInitialGame(mode){
     const deck = createDeck();
     const hands = {
-      p1: deck.slice(0, 26),
+      p1: deck.slice(0,26),
       p2: deck.slice(26)
     };
 
@@ -1281,7 +1256,7 @@
       parent,
       child,
       hands,
-      won: { p1: 0, p2: 0 },
+      won: { p1:0, p2:0 },
       parentCard: null,
       childCard: null,
       childFaceDown: true,
@@ -1293,25 +1268,10 @@
     };
   }
 
-  function getVisibleNames(){
-    if(state.mode === "solo"){
-      return { p1Name: "プレイヤー1", p2Name: "プレイヤー2", p1Tag: "あなた", p2Tag: "CPU" };
-    }
-    if(state.mode === "local2p"){
-      return { p1Name: "プレイヤー1", p2Name: "プレイヤー2", p1Tag: "P1", p2Tag: "P2" };
-    }
-    const hostName = state.roomData?.hostName || "ホスト";
-    const guestName = state.roomData?.guestName || "ゲスト";
-    if(state.isHost){
-      return { p1Name: hostName, p2Name: guestName, p1Tag: "あなた", p2Tag: "相手" };
-    }
-    return { p1Name: hostName, p2Name: guestName, p1Tag: "相手", p2Tag: "あなた" };
-  }
-
   function localPlayerKey(){
     if(state.mode === "solo") return "p1";
-    if(state.mode === "local2p") return null;
-    return state.isHost ? "p1" : "p2";
+    if(state.mode === "online") return state.isHost ? "p1" : "p2";
+    return null;
   }
 
   function isLocalChildTurn(g){
@@ -1319,14 +1279,10 @@
     return g.child === localPlayerKey();
   }
 
-  function remainingPool(g){
-    return [...g.hands.p1, ...g.hands.p2];
-  }
-
-  function cpuChooseGuess(parentValue, remain){
+  function cpuChooseGuess(parentValue, remaining){
     let gt = 0;
     let lt = 0;
-    for(const c of remain){
+    for(const c of remaining){
       if(c.v > parentValue) gt++;
       else if(c.v < parentValue) lt++;
     }
@@ -1334,25 +1290,38 @@
     return gt > lt ? "HIGH" : "LOW";
   }
 
+  function getLabels(){
+    if(state.mode === "solo"){
+      return { p1Name:"プレイヤー1", p2Name:"プレイヤー2", p1Tag:"あなた", p2Tag:"CPU" };
+    }
+    if(state.mode === "local2p"){
+      return { p1Name:"プレイヤー1", p2Name:"プレイヤー2", p1Tag:"P1", p2Tag:"P2" };
+    }
+    const hostName = state.roomData?.hostName || "ホスト";
+    const guestName = state.roomData?.guestName || "ゲスト";
+    if(state.isHost){
+      return { p1Name:hostName, p2Name:guestName, p1Tag:"あなた", p2Tag:"相手" };
+    }
+    return { p1Name:hostName, p2Name:guestName, p1Tag:"相手", p2Tag:"あなた" };
+  }
+
   function renderGame(){
     const g = state.game;
     if(!g) return;
 
-    const names = getVisibleNames();
+    const labels = getLabels();
 
-    p1Label.textContent = "プレイヤー1";
-    p2Label.textContent = "プレイヤー2";
-    p1Badge.textContent = names.p1Tag;
-    p2Badge.textContent = names.p2Tag;
-
-    nameP1.textContent = names.p1Name;
-    nameP2.textContent = names.p2Name;
+    p1Badge.textContent = labels.p1Tag;
+    p2Badge.textContent = labels.p2Tag;
+    nameP1.textContent = labels.p1Name;
+    nameP2.textContent = labels.p2Name;
 
     scoreP1.textContent = g.won.p1;
     scoreP2.textContent = g.won.p2;
+    roundNum.textContent = g.round;
+
     handP1.textContent = g.hands.p1.length;
     handP2.textContent = g.hands.p2.length;
-    roundNum.textContent = g.round;
 
     roleP1.textContent = g.parent === "p1" ? "親（表）" : "子（予想）";
     roleP2.textContent = g.parent === "p2" ? "親（表）" : "子（予想）";
@@ -1360,22 +1329,18 @@
     dotP1.classList.toggle("active", g.inRound && !g.resolved && g.child === "p1");
     dotP2.classList.toggle("active", g.inRound && !g.resolved && g.child === "p2");
 
-    if(state.mode === "solo") gameModeBadge.textContent = "1人用";
-    else if(state.mode === "local2p") gameModeBadge.textContent = "ローカル2人";
-    else gameModeBadge.textContent = "オンライン";
+    gameModeBadge.textContent = state.mode === "solo" ? "1人用" : state.mode === "local2p" ? "ローカル2人" : "オンライン";
 
     if(g.parent === "p1"){
       setCardFace("p1", g.parentCard);
-      flipCard("p1", !!g.parentCard);
-
+      flip("p1", !!g.parentCard);
       setCardFace("p2", g.childCard);
-      flipCard("p2", g.childFaceDown ? false : !!g.childCard);
+      flip("p2", g.childFaceDown ? false : !!g.childCard);
     } else {
       setCardFace("p2", g.parentCard);
-      flipCard("p2", !!g.parentCard);
-
+      flip("p2", !!g.parentCard);
       setCardFace("p1", g.childCard);
-      flipCard("p1", g.childFaceDown ? false : !!g.childCard);
+      flip("p1", g.childFaceDown ? false : !!g.childCard);
     }
 
     const canAct = g.inRound && !g.resolved && !g.ended && isLocalChildTurn(g);
@@ -1394,9 +1359,7 @@
       roundDesc.textContent = g.child === "p1"
         ? "あなたが子です。High / Low を選んでください。"
         : "CPU が予想中です。";
-      hintText.textContent = g.child === "p1"
-        ? "あなたの操作待ち"
-        : "CPU が考えています…";
+      hintText.textContent = g.child === "p1" ? "あなたの操作待ち" : "CPU が考えています…";
     } else if(state.mode === "local2p"){
       roundTitle.textContent = "ローカル2人対戦中";
       roundDesc.textContent = `${g.child === "p1" ? "プレイヤー1" : "プレイヤー2"} が子です。`;
@@ -1406,9 +1369,7 @@
       roundDesc.textContent = isLocalChildTurn(g)
         ? "あなたが子です。High / Low を選んでください。"
         : "相手の選択待ちです。";
-      hintText.textContent = isLocalChildTurn(g)
-        ? "あなたの操作待ち"
-        : "相手の操作待ち…";
+      hintText.textContent = isLocalChildTurn(g) ? "あなたの操作待ち" : "相手の操作待ち…";
     }
   }
 
@@ -1424,49 +1385,20 @@
     resultOverlay.classList.remove("active");
   }
 
-  // ---------------------------------------------------------
-  // Profile / Leaderboard
-  // ---------------------------------------------------------
-  function defaultProfileData(name){
-    return {
-      name: name || "ゲスト",
-      rating: 1000,
-      wins: 0,
-      losses: 0,
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp()
-    };
-  }
-
-  function calcElo(myRating, oppRating, result){
-    const K = 24;
-    const expected = 1 / (1 + Math.pow(10, (oppRating - myRating) / 400));
-    const delta = Math.round(K * (result - expected));
-    return myRating + delta;
-  }
-
   async function loadOrCreateProfile(uid){
     const ref = doc(db, "profiles", uid);
     const snap = await getDoc(ref);
-    const name = currentName();
+    const name = getName();
     saveName();
 
     if(!snap.exists()){
-      await setDoc(ref, defaultProfileData(name));
+      await setDoc(ref, defaultProfile(name));
     } else if(snap.data().name !== name){
       await updateDoc(ref, { name, updatedAt: serverTimestamp() });
     }
 
     const fresh = await getDoc(ref);
     state.profile = { uid, ...fresh.data() };
-    renderProfile();
-  }
-
-  function renderProfile(){
-    if(!state.profile){
-      myProfileBox.textContent = "プロフィール未読込";
-      return;
-    }
     myProfileBox.textContent =
       `名前: ${state.profile.name}\n` +
       `レート: ${state.profile.rating}\n` +
@@ -1482,31 +1414,35 @@
       leaderboard.innerHTML = `<div class="small">まだランキングがありません。</div>`;
       return;
     }
-    let rank = 1;
+
+    let i = 1;
     qs.forEach(snap => {
       const d = snap.data();
       const row = document.createElement("div");
       row.className = "lbRow";
       row.innerHTML = `
-        <div><b>${rank}</b></div>
+        <div><b>${i}</b></div>
         <div>${escapeHtml(d.name || "ゲスト")}</div>
         <div>Rate ${d.rating ?? 1000}</div>
         <div>${d.wins ?? 0}勝</div>
       `;
       leaderboard.appendChild(row);
-      rank++;
+      i++;
     });
   }
 
   function escapeHtml(str){
     return String(str).replace(/[&<>"']/g, s => ({
-      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+      "&":"&amp;",
+      "<":"&lt;",
+      ">":"&gt;",
+      '"':"&quot;",
+      "'":"&#39;"
     }[s]));
   }
 
-  // ---------------------------------------------------------
-  // Local game flow
-  // ---------------------------------------------------------
+  // ========= Local =========
+
   async function beginRoundLocal(){
     const g = state.game;
     if(!g || g.ended) return;
@@ -1526,7 +1462,7 @@
 
     if(state.mode === "solo" && g.child === "p2"){
       await animWait(500);
-      const guess = cpuChooseGuess(g.parentCard.v, remainingPool(g));
+      const guess = cpuChooseGuess(g.parentCard.v, [...g.hands.p1, ...g.hands.p2]);
       await resolveRoundLocal(guess);
     }
   }
@@ -1555,10 +1491,10 @@
     }
 
     renderGame();
-    await animWait(900);
+    await animWait(850);
 
-    flipCard("p1", false);
-    flipCard("p2", false);
+    flip("p1", false);
+    flip("p2", false);
     await animWait(180);
 
     const oldParent = g.parent;
@@ -1571,7 +1507,7 @@
     g.round += 1;
 
     renderGame();
-    await animWait(240);
+    await animWait(220);
     await beginRoundLocal();
   }
 
@@ -1593,10 +1529,9 @@
     openResult(title, "ローカルゲーム終了", g.won.p1, g.won.p2);
   }
 
-  // ---------------------------------------------------------
-  // Online room functions
-  // ---------------------------------------------------------
-  function roomRef(code){
+  // ========= Online =========
+
+  function getRoomRef(code){
     return doc(db, "rooms", code);
   }
 
@@ -1604,20 +1539,20 @@
     if(!state.uid) return;
     const code = sanitizeRoomCode(roomCodeInput.value);
     if(code.length < 4){
-      setStatus(onlineStatus, "合言葉は4文字以上で入力してください。", "bad");
+      setStatus("合言葉は4文字以上で入力してください。", "bad");
       return;
     }
 
     roomCodeInput.value = code;
     saveName();
 
-    const ref = roomRef(code);
+    const ref = getRoomRef(code);
     const snap = await getDoc(ref);
 
     if(snap.exists()){
       const d = snap.data();
       if(d.status !== "finished" && d.guestUid){
-        setStatus(onlineStatus, "その部屋は使用中です。別の合言葉にしてください。", "bad");
+        setStatus("その部屋は使用中です。別の合言葉にしてください。", "bad");
         return;
       }
     }
@@ -1627,7 +1562,7 @@
       status: "waiting",
       hostUid: state.uid,
       guestUid: null,
-      hostName: currentName(),
+      hostName: getName(),
       guestName: "",
       hostRating: state.profile?.rating ?? 1000,
       guestRating: 1000,
@@ -1638,63 +1573,64 @@
       appliedRatingUids: []
     });
 
-    state.roomCode = code;
     state.roomRef = ref;
+    state.roomCode = code;
+    state.roomData = null;
     state.isHost = true;
-    subscribeRoom();
+    state.appliedRating = false;
 
-    setStatus(onlineStatus, `部屋 ${code} を作成しました。\n相手の参加待ちです。`, "good");
+    subscribeRoom();
+    setStatus(`部屋 ${code} を作成しました。\n相手の参加待ちです。`, "good");
   }
 
   async function joinRoom(){
     if(!state.uid) return;
     const code = sanitizeRoomCode(roomCodeInput.value);
     if(code.length < 4){
-      setStatus(onlineStatus, "合言葉は4文字以上で入力してください。", "bad");
+      setStatus("合言葉は4文字以上で入力してください。", "bad");
       return;
     }
 
     roomCodeInput.value = code;
     saveName();
 
-    const ref = roomRef(code);
+    const ref = getRoomRef(code);
     const snap = await getDoc(ref);
-
     if(!snap.exists()){
-      setStatus(onlineStatus, "その部屋は存在しません。ホストが先に作成してください。", "bad");
+      setStatus("その部屋は存在しません。ホストが先に作成してください。", "bad");
       return;
     }
 
     const d = snap.data();
-
     if(d.hostUid === state.uid){
-      setStatus(onlineStatus, "自分が作成した部屋です。", "warn");
+      setStatus("自分が作成した部屋です。", "warn");
       return;
     }
-
     if(d.guestUid && d.guestUid !== state.uid){
-      setStatus(onlineStatus, "その部屋は満員です。", "bad");
+      setStatus("その部屋は満員です。", "bad");
       return;
     }
 
     await updateDoc(ref, {
       guestUid: state.uid,
-      guestName: currentName(),
+      guestName: getName(),
       guestRating: state.profile?.rating ?? 1000,
       status: "ready",
       updatedAt: serverTimestamp()
     });
 
-    state.roomCode = code;
     state.roomRef = ref;
+    state.roomCode = code;
+    state.roomData = null;
     state.isHost = false;
-    subscribeRoom();
+    state.appliedRating = false;
 
-    setStatus(onlineStatus, `部屋 ${code} に参加しました。\nホストの開始待ちです。`, "good");
+    subscribeRoom();
+    setStatus(`部屋 ${code} に参加しました。\nホストの開始待ちです。`, "good");
   }
 
   async function leaveRoom(){
-    if(!state.roomRef || !state.roomData) return;
+    if(!state.roomRef) return;
 
     try{
       if(state.isHost){
@@ -1710,18 +1646,17 @@
           updatedAt: serverTimestamp()
         });
       }
-    } catch (e) {
+    } catch(e){
       console.error(e);
     }
 
     if(state.roomUnsub) state.roomUnsub();
     state.roomUnsub = null;
     state.roomRef = null;
-    state.roomData = null;
     state.roomCode = "";
+    state.roomData = null;
     state.isHost = false;
-
-    setStatus(onlineStatus, "部屋から退出しました。");
+    setStatus("部屋から退出しました。");
   }
 
   function subscribeRoom(){
@@ -1732,24 +1667,23 @@
       if(!snap.exists()){
         state.roomData = null;
         state.roomRef = null;
-        setStatus(onlineStatus, "部屋が存在しなくなりました。", "bad");
+        setStatus("部屋が存在しなくなりました。", "bad");
         return;
       }
 
       state.roomData = snap.data();
 
       if(state.roomData.status === "waiting"){
-        setStatus(onlineStatus, `部屋 ${state.roomCode}：相手待ち`, "warn");
+        setStatus(`部屋 ${state.roomCode}：相手待ち`, "warn");
       } else if(state.roomData.status === "ready"){
         setStatus(
-          onlineStatus,
           `部屋 ${state.roomCode}：2人揃いました。\n${state.isHost ? "ホストは開始できます。" : "ホストの開始待ちです。"}`,
           "good"
         );
       } else if(state.roomData.status === "playing"){
-        setStatus(onlineStatus, `部屋 ${state.roomCode}：対戦中`, "good");
+        setStatus(`部屋 ${state.roomCode}：対戦中`, "good");
       } else if(state.roomData.status === "finished"){
-        setStatus(onlineStatus, `部屋 ${state.roomCode}：対戦終了`, "good");
+        setStatus(`部屋 ${state.roomCode}：対戦終了`, "good");
       }
 
       if(state.roomData.game){
@@ -1757,11 +1691,11 @@
         renderGame();
 
         if(state.isHost){
-          await hostProcessAction();
+          await hostHandleGuestAction();
         }
 
         if(state.game.ended){
-          await maybeApplyRating();
+          await applyRatingIfNeeded();
           openOnlineResult();
         }
       }
@@ -1770,15 +1704,15 @@
 
   async function startOnlineGame(){
     if(!state.roomRef || !state.roomData){
-      setStatus(onlineStatus, "先に部屋作成または参加をしてください。", "bad");
+      setStatus("先に部屋作成または参加をしてください。", "bad");
       return;
     }
     if(!state.isHost){
-      setStatus(onlineStatus, "オンライン開始はホストだけが押せます。", "bad");
+      setStatus("オンライン開始はホストだけが押せます。", "bad");
       return;
     }
     if(!state.roomData.guestUid){
-      setStatus(onlineStatus, "まだ相手が参加していません。", "bad");
+      setStatus("まだ相手が参加していません。", "bad");
       return;
     }
 
@@ -1805,13 +1739,12 @@
   }
 
   async function sendOnlineGuess(guess){
-    if(!state.roomRef || !state.roomData?.game) return;
-    if(state.netBusy) return;
+    if(!state.roomRef || !state.roomData?.game || state.onlineBusy) return;
 
     const g = state.roomData.game;
     if(g.ended || !g.inRound || g.resolved) return;
 
-    state.netBusy = true;
+    state.onlineBusy = true;
     try{
       if(state.isHost){
         if(g.child !== "p1") return;
@@ -1831,18 +1764,18 @@
         });
       }
     } finally {
-      state.netBusy = false;
+      state.onlineBusy = false;
     }
   }
 
-  async function hostProcessAction(){
+  async function hostHandleGuestAction(){
     if(!state.isHost || !state.roomData?.game) return;
     const g = state.roomData.game;
     const action = state.roomData.action;
     if(!action) return;
     if(action.type !== "guess") return;
     if(action.seq === g.hostAppliedActionSeq) return;
-    if(g.ended || !g.inRound || g.child !== "p2") return;
+    if(g.child !== "p2" || g.ended || !g.inRound) return;
 
     await resolveRoundOnline(action.value, action.seq);
   }
@@ -1850,6 +1783,7 @@
   async function resolveRoundOnline(guess, seq){
     const snap = await getDoc(state.roomRef);
     if(!snap.exists()) return;
+
     const room = snap.data();
     const g = room.game;
     if(!g || g.ended || !g.inRound || g.resolved) return;
@@ -1861,21 +1795,17 @@
     if(g.childCard.v > g.parentCard.v) actual = "HIGH";
     else if(g.childCard.v < g.parentCard.v) actual = "LOW";
 
-    let message = "同じ数字なので捨て札。";
     if(actual !== "tie" && actual === guess){
       g.won[g.child] += 2;
-      message = `${g.child === "p1" ? room.hostName : room.guestName} の予想的中。2枚獲得。`;
-    } else if(actual !== "tie"){
-      message = "予想ははずれ。捨て札。";
     }
 
     await updateDoc(state.roomRef, {
       game: g,
-      action: { seq, uid: state.uid, type: "resolved", message },
+      action: { seq, type: "resolved", value: guess },
       updatedAt: serverTimestamp()
     });
 
-    await animWait(1000);
+    await animWait(900);
 
     const snap2 = await getDoc(state.roomRef);
     if(!snap2.exists()) return;
@@ -1891,7 +1821,7 @@
       await updateDoc(state.roomRef, {
         status: "finished",
         game: g2,
-        action: { seq, uid: state.uid, type: "ended", message },
+        action: { seq, type: "ended" },
         updatedAt: serverTimestamp()
       });
       return;
@@ -1910,7 +1840,7 @@
 
     await updateDoc(state.roomRef, {
       game: g2,
-      action: { seq, uid: state.uid, type: "next", message },
+      action: { seq, type: "next" },
       updatedAt: serverTimestamp()
     });
   }
@@ -1919,17 +1849,17 @@
     const g = state.game;
     if(!g || !g.ended) return;
 
-    let title = "引き分け";
     const hostName = state.roomData?.hostName || "ホスト";
     const guestName = state.roomData?.guestName || "ゲスト";
 
+    let title = "引き分け";
     if(g.won.p1 > g.won.p2) title = `${hostName} の勝ち！`;
     else if(g.won.p2 > g.won.p1) title = `${guestName} の勝ち！`;
 
     openResult(title, "オンライン対戦終了", g.won.p1, g.won.p2);
   }
 
-  async function maybeApplyRating(){
+  async function applyRatingIfNeeded(){
     if(state.appliedRating || !state.roomData || !state.game || !state.game.ended) return;
 
     const applied = state.roomData.appliedRatingUids || [];
@@ -1953,17 +1883,17 @@
 
     await runTransaction(db, async (tx) => {
       const snap = await tx.get(profileRef);
-      const base = snap.exists() ? snap.data() : { name: currentName(), rating: 1000, wins: 0, losses: 0 };
+      const base = snap.exists() ? snap.data() : { name:getName(), rating:1000, wins:0, losses:0 };
       const newRating = calcElo(base.rating ?? myBefore, oppBefore, result);
 
       tx.set(profileRef, {
-        name: currentName(),
+        name: getName(),
         rating: newRating,
         wins: (base.wins || 0) + (result === 1 ? 1 : 0),
         losses: (base.losses || 0) + (result === 0 ? 1 : 0),
         updatedAt: serverTimestamp(),
         createdAt: base.createdAt || serverTimestamp()
-      }, { merge: true });
+      }, { merge:true });
     });
 
     await updateDoc(state.roomRef, {
@@ -1976,9 +1906,9 @@
     await refreshLeaderboard();
   }
 
-  // ---------------------------------------------------------
-  // Event bindings
-  // ---------------------------------------------------------
+  // -------------------------
+  // Events
+  // -------------------------
   document.querySelectorAll(".modeCard").forEach(el => {
     el.addEventListener("click", () => {
       document.querySelectorAll(".modeCard").forEach(x => x.classList.remove("selected"));
@@ -2002,34 +1932,33 @@
   joinRoomBtn.addEventListener("click", joinRoom);
   leaveRoomBtn.addEventListener("click", leaveRoom);
   startOnlineBtn.addEventListener("click", startOnlineGame);
+  refreshLbBtn.addEventListener("click", refreshLeaderboard);
 
-  startLocalBtn.addEventListener("click", async () => {
+  startBtn.addEventListener("click", async () => {
     state.first = firstSelect.value;
     state.anim = animSelect.value === "on";
     saveName();
+    hideToast();
+    closeResult();
 
     if(state.mode === "online"){
       if(!state.roomRef){
-        setStatus(onlineStatus, "先に部屋作成または参加をしてください。", "bad");
+        setStatus("先に部屋作成または参加をしてください。", "bad");
         return;
       }
       if(!state.isHost){
-        setStatus(onlineStatus, "オンライン開始はホストだけが押せます。", "bad");
+        setStatus("オンライン開始はホストだけが押せます。", "bad");
         return;
       }
       await startOnlineGame();
       return;
     }
 
-    hideToast();
-    closeResult();
     state.game = buildInitialGame(state.mode);
     showGame();
     renderGame();
     await beginRoundLocal();
   });
-
-  refreshLbBtn.addEventListener("click", refreshLeaderboard);
 
   menuBtn.addEventListener("click", showMenu);
 
@@ -2091,48 +2020,35 @@
     showMenu();
   });
 
-  window.addEventListener("beforeunload", async () => {
-    // 厳密保証はできないが、できる範囲で退出整理
-  });
-
-  // ---------------------------------------------------------
+  // -------------------------
   // Firebase init
-  // ---------------------------------------------------------
-  async function initAuth(){
+  // -------------------------
+  async function init(){
+    nameInput.value = localStorage.getItem("hl_name") || "";
+
+    onAuthStateChanged(auth, async (user) => {
+      if(!user) return;
+      state.uid = user.uid;
+      authChip.textContent = "Firebase接続済み";
+      authChip.className = "chip good";
+
+      await loadOrCreateProfile(user.uid);
+      await refreshLeaderboard();
+    });
+
     try{
       await signInAnonymously(auth);
     } catch (e) {
       console.error(e);
       authChip.textContent = "認証失敗";
       authChip.className = "chip warn";
-      setStatus(onlineStatus, "匿名認証に失敗しました。Authentication の Anonymous を有効化してください。", "bad");
+      setStatus("匿名認証に失敗しました。Authentication の Anonymous を有効化してください。", "bad");
     }
-  }
 
-  onAuthStateChanged(auth, async (user) => {
-    if(!user) return;
-    state.user = user;
-    state.uid = user.uid;
-
-    authChip.textContent = "Firebase接続済み";
-    authChip.className = "chip good";
-
-    await loadOrCreateProfile(user.uid);
-    await refreshLeaderboard();
-  });
-
-  // ---------------------------------------------------------
-  // Boot
-  // ---------------------------------------------------------
-  async function boot(){
-    nameInput.value = localStorage.getItem("hl_name") || "";
-    state.first = firstSelect.value;
-    state.anim = animSelect.value === "on";
     showMenu();
-    await initAuth();
   }
 
-  boot();
+  init();
 </script>
 </body>
 </html>
