@@ -1866,12 +1866,19 @@
         );
       } else if(state.roomData.status === "playing"){
         setStatus(`部屋 ${state.roomCode}：対戦中`, "good");
+        showGame();
       } else if(state.roomData.status === "finished"){
         setStatus(`部屋 ${state.roomCode}：対戦終了`, "good");
+        showGame();
       }
 
       if(state.roomData.game){
         state.game = clone(state.roomData.game);
+
+        if(state.roomData.status === "playing" || state.roomData.status === "finished"){
+          showGame();
+        }
+
         renderGame();
 
         if(state.isHost){
@@ -1884,14 +1891,6 @@
         }
       }
     });
-  }
-
-  async function pushRoomHistory(text){
-    if(!state.roomRef) return;
-    const current = Array.isArray(state.roomData?.history) ? [...state.roomData.history] : [];
-    current.unshift(text);
-    const trimmed = current.slice(0, 40);
-    await updateDoc(state.roomRef, { history: trimmed, updatedAt: serverTimestamp() });
   }
 
   async function startOnlineGame(){
